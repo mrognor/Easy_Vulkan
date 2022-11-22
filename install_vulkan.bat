@@ -21,7 +21,9 @@ if not exist "%VK_SDK_PATH%" (
 			echo The vulkan installer download was completed successfully
 			move VulkanSDK.exe.downloading VulkanSDK.exe
 		)
-	) else (
+	) 
+	
+	if exist VulkanSDK.exe (
 		echo The vulkan installer will be launched now. If you don't know what to choose, then I recommend not touching anything, except of course the installation path
 		timeout 10
 		
