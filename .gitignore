@@ -1,3 +1,4 @@
 *.sh
 .vscode
 *.exe
+build
