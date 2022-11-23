@@ -1,8 +1,8 @@
-#include "EV_InitWindow.h"
+#include "EV_Init_GLFWwindow.h"
 
 namespace EV
 {
-    void EV_InitWindow::operator()(GLFWwindow* &window)
+    void EV_Init_GLFWwindow::operator()(GLFWwindow* &window)
     {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -10,7 +10,7 @@ namespace EV
         window = glfwCreateWindow(WindowWidth, WindowHeight, WindowTitle.c_str(), nullptr, nullptr);
     }
 
-    void EV_CleanupWindow(GLFWwindow* &window)
+    void EV_Cleanup_GLFWwindow(GLFWwindow* &window)
     {
         glfwDestroyWindow(window);
         glfwTerminate();
