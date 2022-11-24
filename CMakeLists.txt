@@ -33,7 +33,6 @@ if(WIN32)
 
     target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw64/include)
     target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw64/${WindowsGLFWPath})
-	message(${VK_SDK_PATH}/EasyVulkanLibs/glfw64/${WindowsGLFWPath})
 endif()
 
 target_link_libraries(EasyVulkanDemoApp EasyVulkan ${StandartIncludeLibraries})
