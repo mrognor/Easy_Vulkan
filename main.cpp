@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "EV_Init_GLFWwindow.h"
+#include "EV_GLFWwindow.h"
 
 class VulkanApp
 {
@@ -10,7 +10,7 @@ private:
 public:
     void Run() 
     {
-        EV::EV_Init_GLFWwindow WindowCreateObject;
+        EV::EV_Create_GLFWwindow WindowCreateObject;
         // WindowCreateObject.WindowWidth = 1000;
         // WindowCreateObject.WindowHeight = 800;
         // WindowCreateObject.WindowTitle = "VkApp";
@@ -37,7 +37,7 @@ private:
 
     void Cleanup() 
     {
-        EV::EV_Cleanup_GLFWwindow(Window);
+        EV::EV_Destroy_GLFWwindow(Window);
     }
 };
 

@@ -6,7 +6,7 @@
 
 namespace EV
 {
-    class EV_Init_GLFWwindow
+    class EV_Create_GLFWwindow
     {
     public:
         int WindowWidth = 800;
@@ -16,5 +16,5 @@ namespace EV
         void operator()(GLFWwindow* &window);
     };
 
-    void EV_Cleanup_GLFWwindow(GLFWwindow* &window);
+    void EV_Destroy_GLFWwindow(GLFWwindow* &window);
 }   

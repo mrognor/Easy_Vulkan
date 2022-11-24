@@ -31,9 +31,9 @@ endif()
 # Library binary
 project(EasyVulkan)
 
-set(LibHeaders EV_Init_GLFWwindow.h)
+set(LibHeaders EV_GLFWwindow.h)
 
-set(LibSources EV_Init_GLFWwindow.cpp)
+set(LibSources EV_GLFWwindow.cpp)
 
 add_library(EasyVulkan STATIC ${LibSources} ${LibHeaders})
 
