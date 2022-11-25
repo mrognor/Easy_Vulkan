@@ -41,7 +41,7 @@ namespace EV
             createInfo.enabledLayerCount = 0;
             
             // Create VkInstance
-            VkResult createInstanceResult = vkCreateInstance(nullptr, nullptr, &instance);
+            VkResult createInstanceResult = vkCreateInstance(&createInfo, nullptr, &instance);
 
             // We check if there were any errors when creating VkInstance
             if (createInstanceResult != VK_SUCCESS)
