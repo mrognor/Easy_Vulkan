@@ -22,22 +22,22 @@ if exist %VK_SDK_PATH% (
 		)
 	) else echo glm alredy installed
 
-	:: Install glfw64
-	if not exist %VK_SDK_PATH%\EasyVulkanLibs\glfw64 (
+	:: Install glfw
+	if not exist %VK_SDK_PATH%\EasyVulkanLibs\glfw (
 		if exist glfw-%glfw64Version%.bin.WIN64.zip.downloading rm glfw-%glfw64Version%.bin.WIN64.zip.downloading
 		
 		powershell -command "Invoke-WebRequest https://github.com/glfw/glfw/releases/download/%glfw64Version%/glfw-%glfw64Version%.bin.WIN64.zip -OutFile glfw-%glfw64Version%.bin.WIN64.zip.downloading"
 		
 		if not exist glfw-%glfw64Version%.bin.WIN64.zip.downloading (
-			echo Failed to download glfw64. Check you internet connection
+			echo Failed to download glfw. Check you internet connection
 			pause
 		) else (
 			move glfw-%glfw64Version%.bin.WIN64.zip.downloading glfw-%glfw64Version%.bin.WIN64.zip
 			powershell -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('glfw-%glfw64Version%.bin.WIN64.zip', '%VK_SDK_PATH%\EasyVulkanLibs'); }"
-			move %VK_SDK_PATH%\EasyVulkanLibs\glfw-%glfw64Version%.bin.WIN64 %VK_SDK_PATH%\EasyVulkanLibs\glfw64
+			move %VK_SDK_PATH%\EasyVulkanLibs\glfw-%glfw64Version%.bin.WIN64 %VK_SDK_PATH%\EasyVulkanLibs\glfw
 			del "glfw-%glfw64Version%.bin.WIN64.zip"
 		)
-	) else echo glfw64 alredy installed
+	) else echo glfw alredy installed
 
 	:: Install glfw32
 	if not exist %VK_SDK_PATH%\EasyVulkanLibs\glfw32 (

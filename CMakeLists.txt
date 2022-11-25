@@ -13,8 +13,20 @@ if(WIN32)
         string(REGEX MATCH "....$" WindowsGLFWPath ${CMAKE_GENERATOR})
         string(CONCAT WindowsGLFWPath "lib-vc" ${WindowsGLFWPath} "/glfw3.lib")
     else()
-        set(WindowsGLFWPath "lib-mingw-w64/libglfw3.a")
+		# Checks architecture
+		if (${CMAKE_GENERATOR_PLATFORM} MATCHES Win32)
+			set (WindowsGLFWPath "lib-mingw/libglfw3.a")
+		else()
+			set(WindowsGLFWPath "lib-mingw-w64/libglfw3.a")
+		endif()
     endif()
+	
+	# Checks architecture
+	if (${CMAKE_GENERATOR_PLATFORM} MATCHES Win32)
+		set (BuildArchitecture "32")
+	else()
+		set (BuildArchitecture "")
+	endif()
 else()
     set(StandartIncludeLibraries glfw vulkan dl pthread X11 Xxf86vm Xrandr Xi)
 endif()
@@ -29,10 +41,10 @@ if(WIN32)
     target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glm/)
 
     target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/include)
-    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/Lib/vulkan-1.lib)
+    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
 
-    target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw64/include)
-    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw64/${WindowsGLFWPath})
+    target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
+    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
 endif()
 
 target_link_libraries(EasyVulkanDemoApp EasyVulkan ${StandartIncludeLibraries})
@@ -54,5 +66,5 @@ if(WIN32)
 
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/include)
 
-    target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw64/include)
+    target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
 endif()
