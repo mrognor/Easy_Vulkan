@@ -2,34 +2,35 @@
 #include <stdexcept>
 
 #include "EV_GLFWwindow.h"
+#include "EV_VkInstance.h"
 
 class VulkanApp
 {
 private:
-    GLFWwindow* Window;
+    GLFWwindow* GLFWwindow;
+    VkInstance VulkanInstance;
 public:
     void Run() 
     {
-        EV::EV_Create_GLFWwindow WindowCreateObject;
-        // WindowCreateObject.WindowWidth = 1000;
-        // WindowCreateObject.WindowHeight = 800;
-        // WindowCreateObject.WindowTitle = "VkApp";
-        WindowCreateObject(Window);
+        // Create GLFWwindow
+        EV::EV_Create_GLFWwindow GLFWwindowCreateObject;
+        // GLFWwindowCreateObject.WindowWidth = 1000;
+        // GLFWwindowCreateObject.WindowHeight = 800;
+        // GLFWwindowCreateObject.WindowTitle = "VkApp";
+        GLFWwindowCreateObject(GLFWwindow);
+        
+        // Create VkInstance
+        EV::EV_Create_VkInstance VkInstanceCreateObject;
+        VkInstanceCreateObject(VulkanInstance);
 
-        InitVulkan();
         MainLoop();
         Cleanup();
     }
 
 private:
-    void InitVulkan()
-    {
-
-    }
-
     void MainLoop() 
     {
-        while (!glfwWindowShouldClose(Window)) 
+        while (!glfwWindowShouldClose(GLFWwindow)) 
         {
             glfwPollEvents();
         }
@@ -37,7 +38,7 @@ private:
 
     void Cleanup() 
     {
-        EV::EV_Destroy_GLFWwindow(Window);
+        EV::EV_Destroy_GLFWwindow(GLFWwindow);
     }
 };
 
