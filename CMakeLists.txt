@@ -65,6 +65,8 @@ if(WIN32)
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glm/)
 
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/include)
+	target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
 
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
+	target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
 endif()
