@@ -47,4 +47,9 @@ namespace EV
             if (createInstanceResult != VK_SUCCESS)
                 throw std::runtime_error("Failed to create VkInstance!\nYou can see errors on specification: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html\nError code: " + createInstanceResult);
         }
+
+    void EV_Destroy_VkInstance(VkInstance& instance)
+    {
+        vkDestroyInstance(instance, nullptr);
+    }
 }

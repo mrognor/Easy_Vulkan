@@ -11,4 +11,6 @@ namespace EV
     public:
         void operator()(VkInstance& instance);
     };
+
+    void EV_Destroy_VkInstance(VkInstance& instance);
 }

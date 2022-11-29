@@ -38,6 +38,7 @@ private:
 
     void Cleanup() 
     {
+        EV::EV_Destroy_VkInstance(VulkanInstance);
         EV::EV_Destroy_GLFWwindow(GLFW_Window);
     }
 };
