@@ -7,7 +7,7 @@
 class VulkanApp
 {
 private:
-    GLFWwindow* GLFWwindow;
+    GLFWwindow* GLFW_Window;
     VkInstance VulkanInstance;
 public:
     void Run() 
@@ -17,7 +17,7 @@ public:
         // GLFWwindowCreateObject.WindowWidth = 1000;
         // GLFWwindowCreateObject.WindowHeight = 800;
         // GLFWwindowCreateObject.WindowTitle = "VkApp";
-        GLFWwindowCreateObject(GLFWwindow);
+        GLFWwindowCreateObject(GLFW_Window);
         
         // Create VkInstance
         EV::EV_Create_VkInstance VkInstanceCreateObject;
@@ -30,7 +30,7 @@ public:
 private:
     void MainLoop() 
     {
-        while (!glfwWindowShouldClose(GLFWwindow)) 
+        while (!glfwWindowShouldClose(GLFW_Window)) 
         {
             glfwPollEvents();
         }
@@ -38,7 +38,7 @@ private:
 
     void Cleanup() 
     {
-        EV::EV_Destroy_GLFWwindow(GLFWwindow);
+        EV::EV_Destroy_GLFWwindow(GLFW_Window);
     }
 };
 
