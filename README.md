@@ -3,7 +3,7 @@ To prepare the project for work, you must do the following:
 2. Install glfw and glm. Use the install_glfw_and_glm.bat script from this folder
 3. Run configure.bat to make sln project using cmake
 
-If you encounter problems with the vulkan, make sure that your equipment supports the vulkan and update the drivers. 
+If you encounter problems with the vulkan, make sure that your equipment supports the vulkan and update the drivers.  
 NVIDIA - https://developer.nvidia.com/vulkan-driver  
 AMD https://www.amd.com/en/support/kb/release-notes/rn-rad-win-vulkan  
 Intel https://www.intel.com/content/www/us/en/download/19344/intel-graphics-windows-dch-drivers.html  
