@@ -24,18 +24,12 @@ if not exist "%VK_SDK_PATH%" (
 	) 
 	
 	if exist VulkanSDK.exe (
-		echo The vulkan installer will be launched now. If you don't know what to choose, then I recommend not touching anything, except of course the installation path
-		timeout 10
+		echo The vulkan installer will be launched now. If you don't know what to choose, then I recommend choose all. 
 		
 		:: Vulkan installation
 		start /wait VulkanSDK.exe
 		
-		:: We ask the user whether it is necessary to remove the vulkan installer
-		choice /T 10 /D yes /M "Delete vulkan installator ?"
-		:: 
-		if %ERRORLEVEL% == 1 rm VulkanSDK.exe
+		rm VulkanSDK.exe
+		exit
 	)
-) else (	
-	echo The vulkan is already installed
-	pause
-)
+) else echo The vulkan is already installed

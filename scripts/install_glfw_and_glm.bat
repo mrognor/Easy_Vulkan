@@ -1,11 +1,21 @@
 @echo off
+setlocal ENABLEEXTENSIONS
 
 :: Configure vulkan version
 set glmVersion=0.9.9.8
 set glfw64Version=3.3.8
 set glfw32Version=3.3.8
 
-if exist %VK_SDK_PATH% (
+set KEY_NAME=HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment
+set VALUE_NAME=VK_SDK_PATH
+
+:: Find vulkan path in reg
+for /F "usebackq tokens=1,2,*" %%A IN (`reg query "%KEY_NAME%" /v "%VALUE_NAME%" 2^>nul ^| find "%VALUE_NAME%"`) do (
+	set VK_SDK_PATH=%%C
+)
+
+
+if defined VK_SDK_PATH (
 	:: Install glm
 	if not exist %VK_SDK_PATH%\EasyVulkanLibs\glm (
 		if exist glm-%glmVersion%.zip.downloading rm glm-%glmVersion%.zip.downloading
@@ -13,7 +23,7 @@ if exist %VK_SDK_PATH% (
 		powershell -command "Invoke-WebRequest https://github.com/g-truc/glm/releases/download/%glmVersion%/glm-%glmVersion%.zip -OutFile glm-%glmVersion%.zip.downloading"
 		
 		if not exist glm-%glmVersion%.zip.downloading (
-			echo Failed to download glm. Check you internet connection
+			echo Failed to download glm. Check your internet connection
 			pause
 		) else (
 			move glm-%glmVersion%.zip.downloading glm-%glmVersion%.zip
@@ -55,8 +65,9 @@ if exist %VK_SDK_PATH% (
 			del "glfw-%glfw32Version%.bin.WIN32.zip"
 		)
 	) else echo glfw32 alredy installed
+	exit
 ) else (
-	echo You dont install vulan. Install it first. You can make it vby yourself or by install_vulkan.bat file from this directory
+	echo You dont install vulkan. Install it first. You can make it by yourself or by install_vulkan.bat file from this directory
 	pause
 )
 
