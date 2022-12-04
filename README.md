@@ -5,8 +5,8 @@ To prepare the project for work, you must do the following:
 
 If you encounter problems with the vulkan, make sure that your equipment supports the vulkan and update the drivers.  
 NVIDIA - https://developer.nvidia.com/vulkan-driver  
-AMD https://www.amd.com/en/support/kb/release-notes/rn-rad-win-vulkan  
-Intel https://www.intel.com/content/www/us/en/download/19344/intel-graphics-windows-dch-drivers.html  
+AMD - https://www.amd.com/en/support/kb/release-notes/rn-rad-win-vulkan  
+Intel - https://www.intel.com/content/www/us/en/download/19344/intel-graphics-windows-dch-drivers.html  
 
 If you want to remove or update glfw and glm, you can remove them using a delete_glfw_and_glm.bat script
 To change the version of the volcano being installed, or glfw or glm, you can open .bat files and specify the desired version there
