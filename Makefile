@@ -1,8 +1,18 @@
+FileExt = 
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
+
+ifeq ($(OS),Windows_NT)
+	WinSDKPath = $(shell echo ${VK_SDK_PATH})
+	WinVK = -I$(WinSDKPath)\Include -L$(WinSDKPath)\Lib -lvulkan-1
+	WinGLFW = -I$(WinSDKPath)\EasyVulkanLibs\glfw\include -L$(WinSDKPath)\EasyVulkanLibs\glfw\lib-mingw-w64 -lglfw3
+	WinGLM = -I$(WinSDKPath)\EasyVulkanLibs\glm\glm
+	FileExt = .exe
+	LDFLAGS = $(WinGLM) $(WinGLFW) $(WinVK) -lgdi32
+endif
 
 testapp: bin/libEasyVulkan.a
 	mkdir -p bin
-	g++ main.cpp bin/libEasyVulkan.a -o bin/main $(LDFLAGS)
+	g++ main.cpp bin/libEasyVulkan.a -o bin/main$(FileExt) $(LDFLAGS)
 
 bin/libEasyVulkan.a: bin/EV_GLFWwindow.o bin/EV_VkInstance.o
 	ar rc bin/libEasyVulkan.a bin/EV_GLFWwindow.o bin/EV_VkInstance.o
