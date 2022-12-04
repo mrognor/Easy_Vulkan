@@ -1,2 +1,2 @@
-start /wait scripts\install_vulkan.bat 
-start /wait scripts\install_glfw_and_glm.bat
+start /wait install_vulkan.bat 
+start /wait install_glfw_and_glm.bat
