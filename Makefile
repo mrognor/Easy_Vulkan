@@ -11,9 +11,10 @@ ifeq ($(OS),Windows_NT)
 	LDFLAGS = $(WinGLM) $(WinGLFW) $(WinVK) -lgdi32
 endif
 
-debug: CXXFLAGS += -g -D NDEBUG
+debug: CXXFLAGS += -g 
 debug: bin/main$(FileExt)
 
+release: CXXFLAGS += -D NDEBUG -O3
 release: bin/main$(FileExt)
 
 bin/main$(FileExt): bin/libEasyVulkan.a
