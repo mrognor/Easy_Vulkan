@@ -7,6 +7,10 @@ namespace EV
     class EV_Create_VkInstance
     {
     public:
+        VkInstanceCreateInfo InstanceCreateInfo{};
+    public:
+        EV_Create_VkInstance();
+
         void operator()(VkInstance& instance);
     };
 

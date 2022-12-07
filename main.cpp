@@ -3,6 +3,7 @@
 
 #include "EV_GLFWwindow.h"
 #include "EV_VkInstance.h"
+#include "EV_VkValidationLayers.h"
 
 class VulkanApp
 {
@@ -19,10 +20,14 @@ public:
         // GLFWwindowCreateObject.WindowTitle = "VkApp";
         GLFWwindowCreateObject(GLFW_Window);
         
+        // Enable validation layers. 
+        EV::EV_Enable_VkValidationLayers VkValidationLayersEnableObject;
+        VkValidationLayersEnableObject();
+
         // Create VkInstance
         EV::EV_Create_VkInstance VkInstanceCreateObject;
         VkInstanceCreateObject(VulkanInstance);
-
+        
         MainLoop();
         Cleanup();
     }
