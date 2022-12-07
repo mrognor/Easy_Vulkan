@@ -1,9 +1,11 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "EV_Include.h"
 #include "EV_GLFWwindow.h"
 #include "EV_VkInstance.h"
 #include "EV_VkValidationLayers.h"
+
 
 class VulkanApp
 {
@@ -20,6 +22,8 @@ public:
         // GLFWwindowCreateObject.WindowTitle = "VkApp";
         GLFWwindowCreateObject(GLFW_Window);
         
+        // You can determine all validation layers required by you
+        // EV::RequiredValidationLayers = {"VK_LAYER_KHRONOS_validation"};
         // Enable validation layers. 
         EV::EV_Enable_VkValidationLayers VkValidationLayersEnableObject;
         VkValidationLayersEnableObject();
@@ -28,6 +32,8 @@ public:
         EV::EV_Create_VkInstance VkInstanceCreateObject;
         VkInstanceCreateObject(VulkanInstance);
         
+        
+
         MainLoop();
         Cleanup();
     }

@@ -7,5 +7,8 @@
 #include <stdexcept>
 #include <iostream>
 
-// Vector with all required validation layers
-const std::vector<const char*> RequiredValidationLayers = {"VK_LAYER_KHRONOS_validation"};
+namespace EV
+{
+    // Vector with all required validation layers
+    extern std::vector<const char*> RequiredValidationLayers;
+}

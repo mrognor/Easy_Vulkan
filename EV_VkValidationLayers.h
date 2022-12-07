@@ -8,10 +8,8 @@ namespace EV
     {
     private:
         bool CheckValidationLayerSupport();
-        
+
     public:
         void operator()();
-
-
     };
 }

@@ -2,6 +2,8 @@
 
 namespace EV
 {
+    std::vector<const char*> RequiredValidationLayers = {"VK_LAYER_KHRONOS_validation"};
+
     bool EV_Enable_VkValidationLayers::CheckValidationLayerSupport()
     {
         // Get available validation layer count
