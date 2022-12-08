@@ -52,9 +52,9 @@ target_link_libraries(EasyVulkanDemoApp EasyVulkan ${StandartIncludeLibraries})
 # Library binary
 project(EasyVulkan)
 
-set(LibHeaders EV_GLFWwindow.h EV_VkInstance.h)
+set(LibHeaders EV_GLFWwindow.h EV_VkInstance.h EV_Include.h EV_VkValidationLayers.h)
 
-set(LibSources EV_GLFWwindow.cpp EV_VkInstance.cpp)
+set(LibSources EV_GLFWwindow.cpp EV_VkInstance.cpp EV_VkValidationLayers.cpp)
 
 add_library(EasyVulkan STATIC ${LibSources} ${LibHeaders})
 
