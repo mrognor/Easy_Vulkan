@@ -12,34 +12,29 @@ ifeq ($(OS),Windows_NT)
 endif
 
 debug: CXXFLAGS += -g 
-debug: bin/main$(FileExt)
+debug: bin/EasyVulkanApp$(FileExt)
 
 release: CXXFLAGS += -D NDEBUG -O3
-release: bin/main$(FileExt)
+release: bin/EasyVulkanApp$(FileExt)
 
-bin/main$(FileExt): bin/libEasyVulkan.a
+bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a
 	mkdir -p bin
-	g++ $(CXXFLAGS) main.cpp bin/libEasyVulkan.a -o bin/main$(FileExt) $(LDFLAGS)
+	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 
 # Library binary
-bin/libEasyVulkan.a: bin/EV_GLFWwindow.o bin/EV_VkInstance.o bin/EV_VkValidationLayers.o
-	ar rc bin/libEasyVulkan.a bin/EV_GLFWwindow.o bin/EV_VkInstance.o bin/EV_VkValidationLayers.o
+bin/libEasyVulkan.a: bin/EV_App.o bin/EV_VkClassContainer.o
+	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_VkClassContainer.o
 	ranlib bin/libEasyVulkan.a
 
+# Functions binary
+bin/EV_App.o: EV_App.cpp EV_App.h
+	mkdir -p bin
+	g++ -c $(CXXFLAGS) EV_App.cpp -o bin/EV_App.o $(LDFLAGS)
+
 # VkValidationLayers binary
-bin/EV_VkValidationLayers.o: EV_VkValidationLayers.cpp EV_VkValidationLayers.h
+bin/EV_VkClassContainer.o: EV_VkClassContainer.cpp EV_VkClassContainer.h
 	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_VkValidationLayers.cpp -o bin/EV_VkValidationLayers.o $(LDFLAGS) 
-
-# VkInstance binary
-bin/EV_VkInstance.o: EV_VkInstance.cpp EV_VkInstance.h
-	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_VkInstance.cpp -o bin/EV_VkInstance.o $(LDFLAGS) 
-
-# GLFWwindow binary
-bin/EV_GLFWwindow.o: EV_GLFWwindow.cpp EV_GLFWwindow.h
-	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_GLFWwindow.cpp -o bin/EV_GLFWwindow.o $(LDFLAGS) 
+	g++ -c $(CXXFLAGS) EV_VkClassContainer.cpp -o bin/EV_VkClassContainer.o $(LDFLAGS) 
 
 clean:
 	rm -rf bin

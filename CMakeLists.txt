@@ -32,29 +32,30 @@ else()
 endif()
 
 # Demo app binary
-project(EasyVulkanDemoApp)
+project(EasyVulkanApp)
 
-add_executable(EasyVulkanDemoApp main.cpp)
+add_executable(EasyVulkanApp EasyVulkanApp.cpp)
 
 # Include windows libraries 
 if(WIN32)
-    target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glm/)
+    target_include_directories(EasyVulkanApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glm/)
 
-    target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/include)
-    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
+    target_include_directories(EasyVulkanApp PUBLIC ${VK_SDK_PATH}/include)
+    target_link_libraries(EasyVulkanApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
 
-    target_include_directories(EasyVulkanDemoApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
-    target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
+    target_include_directories(EasyVulkanApp PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
+    target_link_libraries(EasyVulkanApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
 endif()
 
-target_link_libraries(EasyVulkanDemoApp EasyVulkan ${StandartIncludeLibraries})
+target_link_libraries(EasyVulkanApp EasyVulkan ${StandartIncludeLibraries})
 
 # Library binary
 project(EasyVulkan)
 
-set(LibHeaders EV_GLFWwindow.h EV_VkInstance.h EV_Include.h EV_VkValidationLayers.h)
+# Set library files
+set(LibHeaders EV_App.h EV_VkClassContainer.h)
 
-set(LibSources EV_GLFWwindow.cpp EV_VkInstance.cpp EV_VkValidationLayers.cpp)
+set(LibSources EV_App.cpp EV_VkClassContainer.cpp)
 
 add_library(EasyVulkan STATIC ${LibSources} ${LibHeaders})
 
@@ -65,8 +66,8 @@ if(WIN32)
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glm/)
 
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/include)
-	target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
+	target_link_libraries(EasyVulkanApp ${VK_SDK_PATH}/Lib${BuildArchitecture}/vulkan-1.lib)
 
     target_include_directories(EasyVulkan PUBLIC ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/include)
-	target_link_libraries(EasyVulkanDemoApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
+	target_link_libraries(EasyVulkanApp ${VK_SDK_PATH}/EasyVulkanLibs/glfw${BuildArchitecture}/${WindowsGLFWPath})
 endif()
