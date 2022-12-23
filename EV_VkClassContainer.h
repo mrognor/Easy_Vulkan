@@ -10,11 +10,14 @@ namespace EV
     class EV_VkClassContainer
     {
     protected:
-        void* Data;
         std::string DataType;
-        EV_App* App;
+        EV_App* App = nullptr;
     public:
-        EV_VkClassContainer(EV_App* app) : App(app) {};
+        EV_VkClassContainer(EV_App* app, std::string dataType);
+        
+        virtual void* GetData() = 0;
+        std::string GetDataType();
+
         virtual void Setup() = 0;
         virtual void Create() = 0;
         virtual void CleanUp() = 0;

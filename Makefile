@@ -17,7 +17,7 @@ debug: bin/EasyVulkanApp$(FileExt)
 release: CXXFLAGS += -D NDEBUG -O3
 release: bin/EasyVulkanApp$(FileExt)
 
-bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a
+bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a EasyVulkanApp.cpp
 	mkdir -p bin
 	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 

@@ -18,6 +18,7 @@ namespace EV
         std::map<std::string, EV_VkClassContainer*> VkClasses;
 
     public:
+        std::map<std::string, EV_VkClassContainer*>* GetVkClasses();
         void Run();
         virtual void Setup() = 0;
         virtual void MainLoop() = 0;
