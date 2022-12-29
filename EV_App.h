@@ -4,23 +4,17 @@
 #include <string>
 
 #include "EV_Classes.h"
-#include "EV_VkClassContainer.h"
 
 namespace EV
 {
     class EV_App
     {
-    private:
-        void Create();
-        void Cleanup();
-
-    protected:
-        std::map<std::string, EV_VkClassContainer*> VkClasses;
-
     public:
-        std::map<std::string, EV_VkClassContainer*>* GetVkClasses();
         void Run();
+
         virtual void Setup() = 0;
+        virtual void Create() = 0;
         virtual void MainLoop() = 0;
+        virtual void Cleanup() = 0;
     };
 }
