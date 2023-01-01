@@ -53,9 +53,9 @@ target_link_libraries(EasyVulkanApp EasyVulkan ${StandartIncludeLibraries})
 project(EasyVulkan)
 
 # Set library files
-set(LibHeaders EV_App.h EV_VkClassContainer.h)
+set(LibHeaders EV_App.h EV_GLFW_Window.h)
 
-set(LibSources EV_App.cpp EV_VkClassContainer.cpp)
+set(LibSources EV_App.cpp EV_GLFW_Window.cpp)
 
 add_library(EasyVulkan STATIC ${LibSources} ${LibHeaders})
 

@@ -24,12 +24,10 @@ namespace EV
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
         VkInstanceCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
 
         // A structure with all the parameters needed to create VkInstance
-        InstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        InstanceCreateInfo.pApplicationInfo = &appInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        createInfo.pApplicationInfo = &appInfo;
 
         // We get the number of necessary vulkan extensions for glfw to work and their list
         uint32_t glfwExtensionCount = 0;
@@ -38,15 +36,15 @@ namespace EV
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
         // Passing the number of extensions and their list to create VkInstance
-        InstanceCreateInfo.enabledExtensionCount = glfwExtensionCount;
-        InstanceCreateInfo.ppEnabledExtensionNames = glfwExtensions;
+        createInfo.enabledExtensionCount = glfwExtensionCount;
+        createInfo.ppEnabledExtensionNames = glfwExtensions;
 
         // Enable validation layers
-        #ifndef NDEBUG
-        InstanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredValidationLayers.size());
-        InstanceCreateInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
-        #else
-        InstanceCreateInfo.enabledLayerCount = 0;
-        #endif
+        // #ifndef NDEBUG
+        // createInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredValidationLayers.size());
+        // createInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
+        // #else
+        // InstanceCreateInfo.enabledLayerCount = 0;
+        // #endif
     }
 }
