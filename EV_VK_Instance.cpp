@@ -2,12 +2,24 @@
 
 namespace EV
 {
-    void EV_VK_Instance::AddRequiredExtensions(std::vector<const char*> requiredExtensions)
+    void EV_VK_Instance::AddRequiredExtension(const char* requiredExtension)
+    {
+        RequiredExtensions.push_back(requiredExtension);
+    }
+
+    void EV_VK_Instance::AddRequiredExtensions(const std::vector<const char*>& requiredExtensions)
     {
         RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end());
-        //#ifndef NDEBUG
-        //RequiredExtensions.push_back();
-        //#endif
+    }
+
+    void EV_VK_Instance::AddRequiredValidationLayer(const char* requiredValidationLayer)
+    {
+        RequiredValidationLayers.push_back(requiredValidationLayer);
+    }
+
+    void EV_VK_Instance::AddRequiredValidationLayers(const std::vector<const char*>& requiredValidationLayers)
+    {
+        RequiredValidationLayers.insert(RequiredValidationLayers.end(), requiredValidationLayers.begin(), requiredValidationLayers.end());
     }
 
     void EV_VK_Instance::Create()
@@ -31,17 +43,22 @@ namespace EV
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
-        VkInstanceCreateInfo createInfo{};
-
         // A structure with all the parameters needed to create VkInstance
+        VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
         // Passing the number of extensions and their list to create VkInstance
         createInfo.enabledExtensionCount = RequiredExtensions.size();
         createInfo.ppEnabledExtensionNames = RequiredExtensions.data();
-        
+
+        // Enable validation layers
+        #ifndef NDEBUG
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredValidationLayers.size());
+        createInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
+        #else
         createInfo.enabledLayerCount = 0;
+        #endif
 
         VkResult createResult = vkCreateInstance(&createInfo, nullptr, &VulkanInstance);
 
@@ -54,13 +71,7 @@ namespace EV
             throw std::runtime_error(errorMsg);
         }
 
-        // Enable validation layers
-        // #ifndef NDEBUG
-        // createInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredValidationLayers.size());
-        // createInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
-        // #else
-        // InstanceCreateInfo.enabledLayerCount = 0;
-        // #endif
+        
     }
 
     void EV_VK_Instance::Destroy()

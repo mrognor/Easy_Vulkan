@@ -15,4 +15,5 @@ namespace EV
     class EV_GLFW_Window;
     
     class EV_VK_Instance;
+    class EV_VK_ValidationLayers;
 }
