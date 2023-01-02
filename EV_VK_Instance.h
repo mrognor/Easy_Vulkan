@@ -8,9 +8,15 @@ namespace EV
     {
     private:
         VkInstance VulkanInstance;
-    
+        std::vector<const char*> RequiredExtensions;
+
     public:
         VkInstance& GetVkInstance() {return VulkanInstance;}
+        std::vector<const char*> GetRequiredExtensions() { return RequiredExtensions; }
+        
+        void AddRequiredExtensions(std::vector<const char*> requiredExtensions);
+
         void Create();
+        void Destroy();
     };
 }

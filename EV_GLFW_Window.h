@@ -20,7 +20,8 @@ namespace EV
         int GetWindowWidth() { return WindowWidth; }
         int GetWindowHeight() { return WindowHeight; }
         std::string GetWindowTitle() { return WindowTitle; }
-
+        std::vector<const char*> GetRequiredExtensions();
+        
         void SetWindowWidth(int windowWidth) { WindowWidth = windowWidth; }
         void SetWindowHeight(int windowHeight) { WindowHeight = windowHeight; }
         void SetWindowTitle(std::string windowTitle) { WindowTitle = windowTitle; }

@@ -2,6 +2,17 @@
 
 namespace EV
 {
+    std::vector<const char*> EV_GLFW_Window::GetRequiredExtensions()
+    {
+        // Get the number of necessary vulkan extensions for glfw to work and their list
+        uint32_t glfwRequiredExtensionCount = 0;
+        const char** glfwRequiredExtensions;
+        glfwRequiredExtensions = glfwGetRequiredInstanceExtensions(&glfwRequiredExtensionCount);
+
+        // Return required extensions
+        return std::vector<const char*> (glfwRequiredExtensions, glfwRequiredExtensions + glfwRequiredExtensionCount);
+    }
+
     void EV_GLFW_Window::Create()
     {
         // Inform the library that it is not necessary to create a OpenGL context

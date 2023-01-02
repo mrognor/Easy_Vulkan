@@ -2,6 +2,14 @@
 
 namespace EV
 {
+    void EV_VK_Instance::AddRequiredExtensions(std::vector<const char*> requiredExtensions)
+    {
+        RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end());
+        //#ifndef NDEBUG
+        //RequiredExtensions.push_back();
+        //#endif
+    }
+
     void EV_VK_Instance::Create()
     {
         /* From the specification:
@@ -29,15 +37,22 @@ namespace EV
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        // We get the number of necessary vulkan extensions for glfw to work and their list
-        uint32_t glfwExtensionCount = 0;
-        const char** glfwExtensions;
-
-        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
         // Passing the number of extensions and their list to create VkInstance
-        createInfo.enabledExtensionCount = glfwExtensionCount;
-        createInfo.ppEnabledExtensionNames = glfwExtensions;
+        createInfo.enabledExtensionCount = RequiredExtensions.size();
+        createInfo.ppEnabledExtensionNames = RequiredExtensions.data();
+        
+        createInfo.enabledLayerCount = 0;
+
+        VkResult createResult = vkCreateInstance(&createInfo, nullptr, &VulkanInstance);
+
+        if (createResult != VK_SUCCESS)
+        {
+            std::string errorMsg = "Failed to create VkInstance! vkCreateInstance error code: ";
+            errorMsg += createResult;
+            errorMsg += "\nMore info about vkCreateInstance here: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateInstance.html";
+            errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
+            throw std::runtime_error(errorMsg);
+        }
 
         // Enable validation layers
         // #ifndef NDEBUG
@@ -46,5 +61,10 @@ namespace EV
         // #else
         // InstanceCreateInfo.enabledLayerCount = 0;
         // #endif
+    }
+
+    void EV_VK_Instance::Destroy()
+    {
+        vkDestroyInstance(VulkanInstance, nullptr);
     }
 }

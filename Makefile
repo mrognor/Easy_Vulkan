@@ -22,8 +22,8 @@ bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a EasyVulkanApp.cpp
 	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 
 # Library binary
-bin/libEasyVulkan.a: bin/EV_App.o bin/EV_GLFW_Window.o
-	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_GLFW_Window.o
+bin/libEasyVulkan.a: bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o
+	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o
 	ranlib bin/libEasyVulkan.a
 
 # EV_App binary
@@ -35,6 +35,11 @@ bin/EV_App.o: EV_App.cpp EV_App.h
 bin/EV_GLFW_Window.o: EV_GLFW_Window.cpp EV_GLFW_Window.h
 	mkdir -p bin
 	g++ -c $(CXXFLAGS) EV_GLFW_Window.cpp -o bin/EV_GLFW_Window.o $(LDFLAGS)
+
+# EV_VK_Instance binary
+bin/EV_VK_Instance.o: EV_VK_Instance.cpp EV_VK_Instance.h
+	mkdir -p bin
+	g++ -c $(CXXFLAGS) EV_VK_Instance.cpp -o bin/EV_VK_Instance.o $(LDFLAGS)
 
 clean:
 	rm -rf bin
