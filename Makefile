@@ -22,14 +22,19 @@ bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a EasyVulkanApp.cpp
 	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 
 # Library binary
-bin/libEasyVulkan.a: bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_VK_ValidationLayers.o
-	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_VK_ValidationLayers.o
+bin/libEasyVulkan.a: bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_VK_ValidationLayers.o bin/EV_Functions.o
+	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_VK_ValidationLayers.o bin/EV_Functions.o
 	ranlib bin/libEasyVulkan.a
 
 # EV_App binary
 bin/EV_App.o: EV_App.cpp EV_App.h
 	mkdir -p bin
 	g++ -c $(CXXFLAGS) EV_App.cpp -o bin/EV_App.o $(LDFLAGS)
+
+# EV_Functions binary
+bin/EV_Functions.o: EV_Functions.cpp EV_Functions.h
+	mkdir -p bin
+	g++ -c $(CXXFLAGS) EV_Functions.cpp -o bin/EV_Functions.o $(LDFLAGS)
 
 # EV_GLFW_Window binary
 bin/EV_GLFW_Window.o: EV_GLFW_Window.cpp EV_GLFW_Window.h

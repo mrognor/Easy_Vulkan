@@ -52,26 +52,34 @@ namespace EV
         createInfo.enabledExtensionCount = RequiredExtensions.size();
         createInfo.ppEnabledExtensionNames = RequiredExtensions.data();
 
-        // Enable validation layers
-        #ifndef NDEBUG
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredValidationLayers.size());
+        // Passing information about validation layers
+        createInfo.enabledLayerCount = static_cast<uint32_t>(RequiredValidationLayers.size());
         createInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
-        #else
-        createInfo.enabledLayerCount = 0;
-        #endif
+           
+        // Fill debug messenger create info struct
+        VkDebugUtilsMessengerCreateInfoEXT MessengerCreateInfo{};
+        MessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        MessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | 
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        MessengerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | 
+        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+        MessengerCreateInfo.pfnUserCallback = EV::EV_DefaultValidationLayersCallback;
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &MessengerCreateInfo;
 
+
+        // Create VkInstance
         VkResult createResult = vkCreateInstance(&createInfo, nullptr, &VulkanInstance);
 
+        // Check VkInstance creation result
         if (createResult != VK_SUCCESS)
         {
             std::string errorMsg = "Failed to create VkInstance! vkCreateInstance error code: ";
-            errorMsg += createResult;
+            errorMsg += std::to_string(createResult);
             errorMsg += "\nMore info about vkCreateInstance here: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateInstance.html";
             errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
             throw std::runtime_error(errorMsg);
         }
-
-        
     }
 
     void EV_VK_Instance::Destroy()
