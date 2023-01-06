@@ -2,24 +2,40 @@
 
 namespace EV
 {
-    void EV_VK_Instance::AddRequiredExtension(const char* requiredExtension)
+    void EV_VK_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
     {
-        RequiredExtensions.push_back(requiredExtension);
-    }
+        // Get available layers count
+        uint32_t availableLayersCount;
+        vkEnumerateInstanceLayerProperties(&availableLayersCount, nullptr);
 
-    void EV_VK_Instance::AddRequiredExtensions(const std::vector<const char*>& requiredExtensions)
-    {
-        RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end());
-    }
+        // Get available layers
+        std::vector<VkLayerProperties> availableLayers(availableLayersCount);
+        vkEnumerateInstanceLayerProperties(&availableLayersCount, availableLayers.data());
 
-    void EV_VK_Instance::AddRequiredValidationLayer(const char* requiredValidationLayer)
-    {
-        RequiredValidationLayers.push_back(requiredValidationLayer);
-    }
+        // Checking the availability of all requested layers
+        for (const char* requiredLayerName : RequiredValidationLayers)
+        {
+            bool requiredLayerFound = false;
 
-    void EV_VK_Instance::AddRequiredValidationLayers(const std::vector<const char*>& requiredValidationLayers)
-    {
-        RequiredValidationLayers.insert(RequiredValidationLayers.end(), requiredValidationLayers.begin(), requiredValidationLayers.end());
+            for (const auto& availableLayerProperties : availableLayers)
+            {
+                if (std::string(requiredLayerName) == std::string(availableLayerProperties.layerName)) 
+                {
+                    requiredLayerFound = true;
+                    break;
+                }
+            }
+
+            if (!requiredLayerFound) 
+                throw std::runtime_error("Validation layer requested, but not available! Layer name: " + std::string(requiredLayerName));
+        }
+
+        // Create debug messenger
+        VkResult createDebugMessengerResult = CreateDebugUtilsMessengerEXT(&VulkanInstance, &debugMessengerCreateInfo, nullptr, &DebugMessenger);
+
+        if (createDebugMessengerResult != VK_SUCCESS) 
+            throw std::runtime_error("Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
+            + "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html");
     }
 
     void EV_VK_Instance::Create()
@@ -44,32 +60,32 @@ namespace EV
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
         // A structure with all the parameters needed to create VkInstance
-        VkInstanceCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
+        VkInstanceCreateInfo vulkanInstanceCreateInfo{};
+        vulkanInstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        vulkanInstanceCreateInfo.pApplicationInfo = &appInfo;
 
         // Passing the number of extensions and their list to create VkInstance
-        createInfo.enabledExtensionCount = RequiredExtensions.size();
-        createInfo.ppEnabledExtensionNames = RequiredExtensions.data();
-
-        // Passing information about validation layers
-        createInfo.enabledLayerCount = static_cast<uint32_t>(RequiredValidationLayers.size());
-        createInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
+        vulkanInstanceCreateInfo.enabledExtensionCount = RequiredExtensions.size();
+        vulkanInstanceCreateInfo.ppEnabledExtensionNames = RequiredExtensions.data();
            
-        // Fill debug messenger create info struct
-        VkDebugUtilsMessengerCreateInfoEXT MessengerCreateInfo{};
-        MessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        MessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | 
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        MessengerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | 
-        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        MessengerCreateInfo.pfnUserCallback = EV::EV_DefaultValidationLayersCallback;
-        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &MessengerCreateInfo;
+        #ifndef NDEBUG
+        // Passing information about validation layers
+        vulkanInstanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(RequiredValidationLayers.size());
+        vulkanInstanceCreateInfo.ppEnabledLayerNames = RequiredValidationLayers.data();
 
+        // Fill debug messenger create info struct
+        VkDebugUtilsMessengerCreateInfoEXT debugMessengerCreateInfo{};
+        debugMessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        debugMessengerCreateInfo.messageSeverity = DebugMessengerSeverityFlags;
+        debugMessengerCreateInfo.messageType = DebugMessengerMessageTypeFlags;
+        debugMessengerCreateInfo.pfnUserCallback = DebugMessengerCallback;
+        vulkanInstanceCreateInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugMessengerCreateInfo;
+        #else
+        vulkanInstanceCreateInfo.enabledLayerCount = 0;
+        #endif
 
         // Create VkInstance
-        VkResult createResult = vkCreateInstance(&createInfo, nullptr, &VulkanInstance);
+        VkResult createResult = vkCreateInstance(&vulkanInstanceCreateInfo, nullptr, &VulkanInstance);
 
         // Check VkInstance creation result
         if (createResult != VK_SUCCESS)
@@ -80,10 +96,18 @@ namespace EV
             errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
             throw std::runtime_error(errorMsg);
         }
+
+        #ifndef NDEBUG
+        CreateDebugMessenger(debugMessengerCreateInfo);
+        #endif
     }
 
     void EV_VK_Instance::Destroy()
     {
+        #ifndef NDEBUG
+        DestroyDebugUtilsMessengerEXT(VulkanInstance, DebugMessenger, nullptr);
+        #endif
+
         vkDestroyInstance(VulkanInstance, nullptr);
     }
 }
