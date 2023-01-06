@@ -31,11 +31,19 @@ namespace EV
         }
 
         // Create debug messenger
-        VkResult createDebugMessengerResult = CreateDebugUtilsMessengerEXT(&VulkanInstance, &debugMessengerCreateInfo, nullptr, &DebugMessenger);
-
-        if (createDebugMessengerResult != VK_SUCCESS) 
-            throw std::runtime_error("Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
-            + "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html");
+        VkResult createDebugMessengerResult;
+        PFN_vkCreateDebugUtilsMessengerEXT createDebugMessengerFunc = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(VulkanInstance, "vkCreateDebugUtilsMessengerEXT");
+        
+        if (createDebugMessengerFunc != nullptr)
+        { 
+            createDebugMessengerResult = createDebugMessengerFunc(VulkanInstance, &debugMessengerCreateInfo, nullptr, &DebugMessenger);
+            
+            if (createDebugMessengerResult != VK_SUCCESS) 
+                throw std::runtime_error("Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
+                + "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html");
+        }
+        else 
+            throw std::runtime_error("Failed to load vkCreateDebugUtilsMessengerEXT! Check extensions and vulkan installation");
     }
 
     void EV_VK_Instance::Create()
@@ -105,7 +113,10 @@ namespace EV
     void EV_VK_Instance::Destroy()
     {
         #ifndef NDEBUG
-        DestroyDebugUtilsMessengerEXT(VulkanInstance, DebugMessenger, nullptr);
+        PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
+        if (destroyDebugMessengerFunc != nullptr) 
+            destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
+        else throw std::runtime_error("Failed to load func vkDestroyDebugUtilsMessengerEXT!");
         #endif
 
         vkDestroyInstance(VulkanInstance, nullptr);
