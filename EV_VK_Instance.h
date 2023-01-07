@@ -5,6 +5,13 @@
 
 namespace EV
 {
+    /**
+        \brief A class for communication between the program and vulkan library
+
+        The instance is the connection between your application and the Vulkan library 
+        and creating it involves specifying some details about your application 
+        to the driver.
+    */
     class EV_VK_Instance
     {
     private:
