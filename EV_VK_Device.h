@@ -13,7 +13,7 @@ namespace EV
 
         bool IsPhysicalDeviceSuitable(const VkPhysicalDevice& physicalDevice);
     public: 
-        EV_VK_Device(VkInstance* vulkanInstance) : VulkanInstance(vulkanInstance) {}
+        void SetVkInstance(VkInstance* vulkanInstance) { VulkanInstance = vulkanInstance; }
         void Create();
     };
 }

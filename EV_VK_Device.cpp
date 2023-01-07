@@ -9,13 +9,16 @@ namespace EV
 
     void EV_VK_Device::Create()
     {
+        if (VulkanInstance == nullptr)
+            throw std::runtime_error("From EV_VK_Device: You forget to setup VkInstance variable!");
+
         // Get all gpus supported vulkan amount
         uint32_t physicalDeviceCount = 0;
         vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, nullptr);
 
         if (physicalDeviceCount == 0) 
             throw std::runtime_error("Failed to find GPUs with Vulkan support!");
-    
+        
         // Get all gpus supported vulkan
         std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
         vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, physicalDevices.data());

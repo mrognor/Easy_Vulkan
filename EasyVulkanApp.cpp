@@ -11,7 +11,7 @@ class MyApp : public EV::EV_App
 private:
     EV::EV_GLFW_Window GLFW_Window;
     EV::EV_VK_Instance VK_Instance;
-    EV::EV_VK_Device VK_Device{ VK_Instance.GetVkInstance() };
+    EV::EV_VK_Device VK_Device;
 public:
     void Setup() override 
     {
@@ -20,6 +20,8 @@ public:
         VK_Instance.AddRequiredExtensions(GLFW_Window.GetRequiredExtensions());
         VK_Instance.AddRequiredExtension("VK_EXT_debug_utils");
         VK_Instance.AddRequiredValidationLayer("VK_LAYER_KHRONOS_validation");
+
+        VK_Device.SetVkInstance(VK_Instance.GetVkInstance());
     }
 
     void Create() override 
