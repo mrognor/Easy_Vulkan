@@ -17,7 +17,7 @@ namespace EV
         vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, nullptr);
 
         if (physicalDeviceCount == 0) 
-            throw std::runtime_error("Failed to find GPUs with Vulkan support!");
+            throw std::runtime_error("From EV_VK_Device: Failed to find GPUs with Vulkan support!");
         
         // Get all gpus supported vulkan
         std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
@@ -51,7 +51,7 @@ namespace EV
         }
 
         if (wasPickedGPU == false)
-            throw std::runtime_error("Failed to find suitable gpu!");
+            throw std::runtime_error("From EV_VK_Device: Failed to find suitable gpu!");
 
         // Get physical device properties
         VkPhysicalDeviceProperties physicalDeviceProperties;
