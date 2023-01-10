@@ -39,7 +39,7 @@ namespace EV
             }
 
             if (!requiredLayerFound) 
-                throw std::runtime_error("Validation layer requested, but not available! Layer name: " + std::string(requiredLayerName));
+                throw std::runtime_error("From EV_VK_Instance: Validation layer requested, but not available! Layer name: " + std::string(requiredLayerName));
         }
 
         // Create debug messenger
@@ -51,11 +51,11 @@ namespace EV
             createDebugMessengerResult = createDebugMessengerFunc(VulkanInstance, &debugMessengerCreateInfo, nullptr, &DebugMessenger);
             
             if (createDebugMessengerResult != VK_SUCCESS) 
-                throw std::runtime_error("Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
+                throw std::runtime_error("From EV_VK_Instance: Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
                 + "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html");
         }
         else 
-            throw std::runtime_error("Failed to load vkCreateDebugUtilsMessengerEXT! Check extensions and vulkan installation");
+            throw std::runtime_error("From EV_VK_Instance: Failed to load vkCreateDebugUtilsMessengerEXT! Check extensions and vulkan installation");
     }
 
     void EV_VK_Instance::Create()
@@ -130,7 +130,7 @@ namespace EV
         // Check VkInstance creation result
         if (createResult != VK_SUCCESS)
         {
-            std::string errorMsg = "Failed to create VkInstance! vkCreateInstance error code: ";
+            std::string errorMsg = "From EV_VK_Instance: Failed to create VkInstance! vkCreateInstance error code: ";
             errorMsg += std::to_string(createResult);
             errorMsg += "\nMore info about vkCreateInstance here: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateInstance.html";
             errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
@@ -148,7 +148,7 @@ namespace EV
         PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
         if (destroyDebugMessengerFunc != nullptr) 
             destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
-        else throw std::runtime_error("Failed to load func vkDestroyDebugUtilsMessengerEXT!");
+        else throw std::runtime_error("From EV_VK_Instance: Failed to load func vkDestroyDebugUtilsMessengerEXT!");
         #endif
 
         vkDestroyInstance(VulkanInstance, nullptr);
