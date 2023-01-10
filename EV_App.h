@@ -10,11 +10,11 @@ namespace EV
     class EV_App
     {
     public:
-        void Run();
+        void Start();
 
         virtual void Setup() = 0;
         virtual void Create() = 0;
-        virtual void MainLoop() = 0;
+        virtual void Run() = 0;
         virtual void Cleanup() = 0;
     };
 }

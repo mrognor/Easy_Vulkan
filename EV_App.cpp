@@ -2,13 +2,13 @@
 
 namespace EV
 {
-    void EV_App::Run() 
+    void EV_App::Start() 
     {
         Setup();
 
         Create();
 
-        MainLoop();
+        Run();
 
         Cleanup();
     }

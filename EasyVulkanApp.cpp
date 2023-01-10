@@ -31,8 +31,18 @@ public:
         VK_Device.Create();
     }
 
-    void MainLoop() override 
+    void Run() override 
     {
+        std::vector<const char*> requiredExtensions = VK_Instance.GetRequiredExtensions();
+        std::cout << "Required extensions:" << std::endl;
+        for (const char*& ext : requiredExtensions)
+            std::cout << "\t" << ext << std::endl; 
+
+        std::vector<VkExtensionProperties> availalbleExtensions = VK_Instance.GetAvailableExtensions();
+        std::cout << "Available extensions:" << std::endl;
+        for (const VkExtensionProperties& extprp : availalbleExtensions)
+            std::cout << "\t" << extprp.extensionName << std::endl; 
+
         GLFW_Window.Tick();
     }
 
@@ -50,7 +60,7 @@ int main()
 
     try 
     {
-        app.Run();
+        app.Start();
     } 
     catch (const std::exception& e) 
     {

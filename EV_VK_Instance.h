@@ -38,6 +38,7 @@ namespace EV
         VkInstance* GetVkInstance() {return &VulkanInstance;}
         std::vector<const char*> GetRequiredExtensions() { return RequiredExtensions; }
         std::vector<const char*> GetRequiredValidationLayers() { return RequiredValidationLayers; }
+        std::vector<VkExtensionProperties> GetAvailableExtensions();
 
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };

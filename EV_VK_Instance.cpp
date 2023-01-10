@@ -2,6 +2,18 @@
 
 namespace EV
 {
+    std::vector<VkExtensionProperties> EV_VK_Instance::GetAvailableExtensions()
+    {
+        // Count available extensions
+        uint32_t availableExtensionsCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr, &availableExtensionsCount, nullptr);
+        
+        // Get all available extensions
+        std::vector<VkExtensionProperties> availableExtensions(availableExtensionsCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &availableExtensionsCount, availableExtensions.data());
+        return availableExtensions;
+    }
+
     void EV_VK_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
     {
         // Get available layers count
@@ -73,6 +85,26 @@ namespace EV
         vulkanInstanceCreateInfo.pApplicationInfo = &appInfo;
 
         // Passing the number of extensions and their list to create VkInstance
+        std::vector<VkExtensionProperties> availableExtensions = GetAvailableExtensions();
+
+        for (VkExtensionProperties availableExtension : availableExtensions)
+        {
+            std::string unFoundExtension;
+            
+            for (const char*& requiredExtension : RequiredExtensions)
+            {
+                unFoundExtension = std::string(requiredExtension);
+                if (unFoundExtension == std::string(availableExtension.extensionName))
+                {
+                    unFoundExtension = "none";
+                    break;
+                }
+            }
+
+            if (unFoundExtension != "none")
+                throw std::runtime_error("Requested extension not available! Extension name: " + unFoundExtension);
+        }
+
         vulkanInstanceCreateInfo.enabledExtensionCount = RequiredExtensions.size();
         vulkanInstanceCreateInfo.ppEnabledExtensionNames = RequiredExtensions.data();
            
