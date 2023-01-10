@@ -102,7 +102,7 @@ namespace EV
             }
 
             if (unFoundExtension != "none")
-                throw std::runtime_error("Requested extension not available! Extension name: " + unFoundExtension);
+                throw std::runtime_error("From EV_VK_Instance: Requested extension not available! Extension name: " + unFoundExtension);
         }
 
         vulkanInstanceCreateInfo.enabledExtensionCount = RequiredExtensions.size();
