@@ -84,27 +84,27 @@ namespace EV
         vulkanInstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         vulkanInstanceCreateInfo.pApplicationInfo = &appInfo;
 
-        // Passing the number of extensions and their list to create VkInstance
+        // Checking all extensions support
         std::vector<VkExtensionProperties> availableExtensions = GetAvailableExtensions();
 
-        for (VkExtensionProperties availableExtension : availableExtensions)
+        for (const char*& requiredExtension : RequiredExtensions)
         {
-            std::string unFoundExtension;
+            bool isFoundExtension = false;
             
-            for (const char*& requiredExtension : RequiredExtensions)
+            for (VkExtensionProperties availableExtension : availableExtensions)
             {
-                unFoundExtension = std::string(requiredExtension);
-                if (unFoundExtension == std::string(availableExtension.extensionName))
+                if (std::string(requiredExtension) == std::string(availableExtension.extensionName))
                 {
-                    unFoundExtension = "none";
+                    isFoundExtension = true;
                     break;
                 }
             }
 
-            if (unFoundExtension != "none")
-                throw std::runtime_error("From EV_VK_Instance: Requested extension not available! Extension name: " + unFoundExtension);
+            if (!isFoundExtension)
+                throw std::runtime_error("From EV_VK_Instance: Requested extension not available! Extension name: " + std::string(requiredExtension));
         }
 
+        // Passing the number of extensions and their list to create VkInstance
         vulkanInstanceCreateInfo.enabledExtensionCount = RequiredExtensions.size();
         vulkanInstanceCreateInfo.ppEnabledExtensionNames = RequiredExtensions.data();
            
