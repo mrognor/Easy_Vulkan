@@ -32,6 +32,9 @@ namespace EV
         // Useless in release mode. Put inside ifndef
         VkDebugUtilsMessengerEXT DebugMessenger;  
 
+        /// Variable to store object creation state
+        bool bIsCreated = false;
+
         void CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo);
 
     public:
@@ -41,6 +44,8 @@ namespace EV
         std::vector<VkExtensionProperties> GetAvailableExtensions();
         std::vector<VkLayerProperties> GetAvailableValidationLayers();
         
+        /// Return true if VkInstance was created. Otherwise return false 
+        bool IsCreated() { return bIsCreated; }
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };
         void AddRequiredValidationLayer(const char* requiredValidationLayer) { RequiredValidationLayers.push_back(requiredValidationLayer); };

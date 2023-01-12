@@ -146,6 +146,8 @@ namespace EV
         #ifndef NDEBUG
         CreateDebugMessenger(debugMessengerCreateInfo);
         #endif
+
+        bIsCreated = true;
     }
 
     void EV_VK_Instance::Destroy()
@@ -158,5 +160,6 @@ namespace EV
         #endif
 
         vkDestroyInstance(VulkanInstance, nullptr);
+        bIsCreated = false;
     }
 }

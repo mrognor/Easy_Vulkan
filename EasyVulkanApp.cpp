@@ -21,7 +21,7 @@ public:
         VK_Instance.AddRequiredExtension("VK_EXT_debug_utils");
         VK_Instance.AddRequiredValidationLayer("VK_LAYER_KHRONOS_validation");
 
-        VK_Device.SetVkInstance(VK_Instance.GetVkInstance());
+        VK_Device.SetVkInstance(&VK_Instance);
     }
 
     void Create() override 

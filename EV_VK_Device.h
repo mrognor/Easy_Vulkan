@@ -1,13 +1,14 @@
 #pragma once 
 
 #include "EV_Classes.h"
+#include "EV_VK_Instance.h"
 
 namespace EV
 {
     class EV_VK_Device
     {
     private:
-        VkInstance* VulkanInstance = nullptr;
+        EV_VK_Instance* VulkanInstance = nullptr;
         
         VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
 
@@ -17,7 +18,7 @@ namespace EV
         std::vector<VkPhysicalDevice> GetPhysicalDevices();
         VkPhysicalDevice* GetPickedPhysicalDevice() { return &PhysicalDevice; }
 
-        void SetVkInstance(VkInstance* vulkanInstance) { VulkanInstance = vulkanInstance; }
+        void SetVkInstance(EV_VK_Instance* vulkanInstance) { VulkanInstance = vulkanInstance; }
         void Create();
     };
 }
