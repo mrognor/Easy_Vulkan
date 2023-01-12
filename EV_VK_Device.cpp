@@ -4,6 +4,29 @@ namespace EV
 {
     bool EV_VK_Device::IsPhysicalDeviceSuitable(const VkPhysicalDevice& physicalDevice)
     {
+        // Get amount of queue families
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+
+        // Get all queue families
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+
+        int i = 0;
+        bool wasFoundGraphicsQueue = false;
+        int graphicsFamilyIndex;
+
+        for (const auto& queueFamily : queueFamilies) 
+        {
+            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
+            {
+                wasFoundGraphicsQueue = true;
+                graphicsFamilyIndex = i;
+                break;
+            }
+            i++;
+        }
+
         return true;
     }
 
