@@ -14,7 +14,7 @@ namespace EV
         return availableExtensions;
     }
 
-    void EV_VK_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
+    std::vector<VkLayerProperties> EV_VK_Instance::GetAvailableValidationLayers()
     {
         // Get available layers count
         uint32_t availableLayersCount;
@@ -23,6 +23,12 @@ namespace EV
         // Get available layers
         std::vector<VkLayerProperties> availableLayers(availableLayersCount);
         vkEnumerateInstanceLayerProperties(&availableLayersCount, availableLayers.data());
+        return availableLayers;
+    }
+
+    void EV_VK_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
+    {
+        std::vector<VkLayerProperties> availableLayers = GetAvailableValidationLayers();
 
         // Checking the availability of all requested layers
         for (const char* requiredLayerName : RequiredValidationLayers)

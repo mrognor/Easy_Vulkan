@@ -33,6 +33,7 @@ public:
 
     void Run() override 
     {
+        // Print info about extensions
         std::vector<const char*> requiredExtensions = VK_Instance.GetRequiredExtensions();
         std::cout << "Required extensions:" << std::endl;
         for (const char*& ext : requiredExtensions)
@@ -42,6 +43,17 @@ public:
         std::cout << "Available extensions:" << std::endl;
         for (const VkExtensionProperties& extprp : availalbleExtensions)
             std::cout << "\t" << extprp.extensionName << std::endl; 
+
+        // Print info about validation layers
+        std::vector<const char*> requiredValidationLayers = VK_Instance.GetRequiredValidationLayers();
+        std::cout << "Required validation layers:" << std::endl;
+        for (const char*& ext : requiredValidationLayers)
+            std::cout << "\t" << ext << std::endl;
+
+        std::vector<VkLayerProperties> availalbleValidationLayers = VK_Instance.GetAvailableValidationLayers();
+        std::cout << "Available validation layers:" << std::endl;
+        for (const VkLayerProperties& extprp : availalbleValidationLayers)
+            std::cout << "\t" << extprp.layerName << std::endl;
 
         GLFW_Window.Tick();
     }
