@@ -13,6 +13,10 @@ namespace EV
 
         bool IsPhysicalDeviceSuitable(const VkPhysicalDevice& physicalDevice);
     public: 
+        /// This function return vector of physical devices with vulkan support
+        std::vector<VkPhysicalDevice> GetPhysicalDevices();
+        VkPhysicalDevice* GetPickedPhysicalDevice() { return &PhysicalDevice; }
+
         void SetVkInstance(VkInstance* vulkanInstance) { VulkanInstance = vulkanInstance; }
         void Create();
     };

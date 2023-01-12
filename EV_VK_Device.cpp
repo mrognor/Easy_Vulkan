@@ -7,22 +7,29 @@ namespace EV
         return true;
     }
 
+    std::vector<VkPhysicalDevice> EV_VK_Device::GetPhysicalDevices()
+    {
+        // Get all gpus supported vulkan amount
+        uint32_t physicalDeviceCount = 0;
+        vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, nullptr);
+        
+        // Get all gpus supported vulkan
+        std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+        vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, physicalDevices.data());
+        return physicalDevices;
+    }
+
     void EV_VK_Device::Create()
     {
         if (VulkanInstance == nullptr)
             throw std::runtime_error("From EV_VK_Device: You forget to setup VkInstance variable!");
 
-        // Get all gpus supported vulkan amount
-        uint32_t physicalDeviceCount = 0;
-        vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, nullptr);
+        // Get all gpus with vulkan support
+        std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
 
-        if (physicalDeviceCount == 0) 
+        if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_VK_Device: Failed to find GPUs with Vulkan support!");
-        
-        // Get all gpus supported vulkan
-        std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
-        vkEnumeratePhysicalDevices(*VulkanInstance, &physicalDeviceCount, physicalDevices.data());
-    
+            
         // Find first suitable device. Have to write code to pich discrete gpu
         bool wasPickedGPU = false;
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
