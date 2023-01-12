@@ -5,6 +5,7 @@
 
 namespace EV
 {
+    // Required EV_VK_Instance var
     class EV_VK_Device
     {
     private:
