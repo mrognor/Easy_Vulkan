@@ -12,7 +12,7 @@ namespace EV
     void* pUserData)
     {
         if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) 
-            std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+            std::cerr << "From validation layer: " << pCallbackData->pMessage << std::endl;
 
         return VK_FALSE;
     }

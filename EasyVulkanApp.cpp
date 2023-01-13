@@ -40,6 +40,7 @@ public:
 
     void Cleanup() override 
     {
+        VK_Device.Destroy();
         VK_Instance.Destroy();
 
         GLFW_Window.Destroy();
@@ -47,7 +48,7 @@ public:
 
     void PrintInfo()
     {
-                // Print info about extensions
+        // Print info about extensions
         std::vector<const char*> requiredExtensions = VK_Instance.GetRequiredExtensions();
         std::cout << "Required extensions:" << std::endl;
         for (const char*& it : requiredExtensions)

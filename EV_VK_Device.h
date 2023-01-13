@@ -12,14 +12,21 @@ namespace EV
         EV_VK_Instance* VulkanInstance = nullptr;
         
         VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
+        VkDevice LogicalDevice;
+        VkQueue GraphicsQueue;
 
-        bool IsPhysicalDeviceSuitable(const VkPhysicalDevice& physicalDevice);
+        // Return false if one of them was not found
+        bool GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex);
     public: 
         /// This function return vector of physical devices with vulkan support
         std::vector<VkPhysicalDevice> GetPhysicalDevices();
         VkPhysicalDevice* GetPickedPhysicalDevice() { return &PhysicalDevice; }
+        VkDevice* GetLogicalDevice() { return &LogicalDevice; }
+        VkQueue* GetGraphicsQueue() { return &GraphicsQueue; }
 
         void SetVkInstance(EV_VK_Instance* vulkanInstance) { VulkanInstance = vulkanInstance; }
         void Create();
+
+        void Destroy();
     };
 }

@@ -2,7 +2,7 @@
 
 namespace EV
 {
-    bool EV_VK_Device::IsPhysicalDeviceSuitable(const VkPhysicalDevice& physicalDevice)
+    bool EV_VK_Device::GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex)
     {
         // Get amount of queue families
         uint32_t queueFamilyCount = 0;
@@ -14,7 +14,6 @@ namespace EV
 
         int i = 0;
         bool wasFoundGraphicsQueue = false;
-        int graphicsFamilyIndex;
 
         for (const auto& queueFamily : queueFamilies) 
         {
@@ -27,7 +26,9 @@ namespace EV
             i++;
         }
 
-        return true;
+        if (wasFoundGraphicsQueue)
+            return true;
+        else return false;
     }
 
     std::vector<VkPhysicalDevice> EV_VK_Device::GetPhysicalDevices()
@@ -60,9 +61,13 @@ namespace EV
             
         // Find first suitable device. Have to write code to pich discrete gpu
         bool wasPickedGPU = false;
+        
+        // Variable to store graphics familiy index on picked gpu
+        uint32_t graphicsFamilyIndex;
+
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
-            if (IsPhysicalDeviceSuitable(physicalDevice))
+            if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex))
             {
                 // Get physical device properties
                 VkPhysicalDeviceProperties physicalDeviceProperties;
@@ -88,9 +93,38 @@ namespace EV
         if (wasPickedGPU == false)
             throw std::runtime_error("From EV_VK_Device: Failed to find suitable gpu!");
 
-        // Get physical device properties
-        VkPhysicalDeviceProperties physicalDeviceProperties;
-        vkGetPhysicalDeviceProperties(PhysicalDevice, &physicalDeviceProperties);
-        std::cout << physicalDeviceProperties.deviceName << std::endl;
-    }   
+        // Pass info to struct to create queue to logical device
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = graphicsFamilyIndex;
+        queueCreateInfo.queueCount = 1;
+        // Maybe let user change this value. After adding second queue type
+        float queuePriority = 1.0f;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        // Requested physcial device features
+        VkPhysicalDeviceFeatures deviceFeatures{};
+
+        // Logical device create info
+        VkDeviceCreateInfo logicalDeviceCreateInfo{};
+        logicalDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        logicalDeviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
+        logicalDeviceCreateInfo.queueCreateInfoCount = 1;
+        logicalDeviceCreateInfo.pEnabledFeatures = &deviceFeatures;
+
+        // Create VkDevice result
+        VkResult createResult = vkCreateDevice(PhysicalDevice, &logicalDeviceCreateInfo, nullptr, &LogicalDevice);
+
+        // Check VkInstance creation result
+        if (createResult != VK_SUCCESS)
+            throw std::runtime_error("From EV_VK_Device: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(createResult));
+
+        // Get graphics queue
+        vkGetDeviceQueue(LogicalDevice, graphicsFamilyIndex, 0, &GraphicsQueue);
+    }  
+
+    void EV_VK_Device::Destroy()
+    {
+        vkDestroyDevice(LogicalDevice, nullptr);
+    } 
 }
