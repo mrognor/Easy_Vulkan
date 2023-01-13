@@ -1,8 +1,8 @@
-#include "EV_VK_Instance.h"
+#include "EV_Instance.h"
 
 namespace EV
 {
-    std::vector<VkExtensionProperties> EV_VK_Instance::GetAvailableExtensions()
+    std::vector<VkExtensionProperties> EV_Instance::GetAvailableExtensions()
     {
         // Count available extensions
         uint32_t availableExtensionsCount = 0;
@@ -14,7 +14,7 @@ namespace EV
         return availableExtensions;
     }
 
-    std::vector<VkLayerProperties> EV_VK_Instance::GetAvailableValidationLayers()
+    std::vector<VkLayerProperties> EV_Instance::GetAvailableValidationLayers()
     {
         // Get available layers count
         uint32_t availableLayersCount;
@@ -26,7 +26,7 @@ namespace EV
         return availableLayers;
     }
 
-    void EV_VK_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
+    void EV_Instance::CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo)
     {
         std::vector<VkLayerProperties> availableLayers = GetAvailableValidationLayers();
 
@@ -45,7 +45,7 @@ namespace EV
             }
 
             if (!requiredLayerFound) 
-                throw std::runtime_error("From EV_VK_Instance: Validation layer requested, but not available! Layer name: " + std::string(requiredLayerName));
+                throw std::runtime_error("From EV_Instance: Validation layer requested, but not available! Layer name: " + std::string(requiredLayerName));
         }
 
         // Create debug messenger
@@ -57,14 +57,14 @@ namespace EV
             createDebugMessengerResult = createDebugMessengerFunc(VulkanInstance, &debugMessengerCreateInfo, nullptr, &DebugMessenger);
             
             if (createDebugMessengerResult != VK_SUCCESS) 
-                throw std::runtime_error("From EV_VK_Instance: Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
+                throw std::runtime_error("From EV_Instance: Failed to set up debug messenger! Error code: " + std::to_string(createDebugMessengerResult)
                 + "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html");
         }
         else 
-            throw std::runtime_error("From EV_VK_Instance: Failed to load vkCreateDebugUtilsMessengerEXT! Check extensions and vulkan installation");
+            throw std::runtime_error("From EV_Instance: Failed to load vkCreateDebugUtilsMessengerEXT! Check extensions and vulkan installation");
     }
 
-    void EV_VK_Instance::Create()
+    void EV_Instance::Create()
     {
         /* From the specification:
         If not NULL, [pApplicationInfo] helps implementations recognize behavior inherent
@@ -107,7 +107,7 @@ namespace EV
             }
 
             if (!isFoundExtension)
-                throw std::runtime_error("From EV_VK_Instance: Requested extension not available! Extension name: " + std::string(requiredExtension));
+                throw std::runtime_error("From EV_Instance: Requested extension not available! Extension name: " + std::string(requiredExtension));
         }
 
         // Passing the number of extensions and their list to create VkInstance
@@ -136,7 +136,7 @@ namespace EV
         // Check VkInstance creation result
         if (createResult != VK_SUCCESS)
         {
-            std::string errorMsg = "From EV_VK_Instance: Failed to create VkInstance! vkCreateInstance error code: ";
+            std::string errorMsg = "From EV_Instance: Failed to create VkInstance! vkCreateInstance error code: ";
             errorMsg += std::to_string(createResult);
             errorMsg += "\nMore info about vkCreateInstance here: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateInstance.html";
             errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
@@ -150,13 +150,13 @@ namespace EV
         bIsCreated = true;
     }
 
-    void EV_VK_Instance::Destroy()
+    void EV_Instance::Destroy()
     {
         #ifndef NDEBUG
         PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
         if (destroyDebugMessengerFunc != nullptr) 
             destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
-        else throw std::runtime_error("From EV_VK_Instance: Failed to load func vkDestroyDebugUtilsMessengerEXT!");
+        else throw std::runtime_error("From EV_Instance: Failed to load func vkDestroyDebugUtilsMessengerEXT!");
         #endif
 
         vkDestroyInstance(VulkanInstance, nullptr);

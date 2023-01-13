@@ -4,7 +4,7 @@
 
 namespace EV
 {
-    class EV_GLFW_Window
+    class EV_Window
     {
     private:
         GLFWwindow* GLFW_Window;
@@ -14,7 +14,7 @@ namespace EV
         std::string WindowTitle = "Easy Vulkan App";
 
     public:
-        EV_GLFW_Window() { glfwInit(); /* Init window library */}
+        EV_Window() { glfwInit(); /* Init window library */}
 
         GLFWwindow* GetGLFWWindow() { return GLFW_Window; }
         int GetWindowWidth() { return WindowWidth; }

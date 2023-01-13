@@ -22,8 +22,8 @@ bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a EasyVulkanApp.cpp
 	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 
 # Library binary
-bin/libEasyVulkan.a: bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_Functions.o bin/EV_VK_Device.o
-	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_GLFW_Window.o bin/EV_VK_Instance.o bin/EV_Functions.o bin/EV_VK_Device.o
+bin/libEasyVulkan.a: bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o
+	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o
 	ranlib bin/libEasyVulkan.a
 
 # EV_App binary
@@ -36,20 +36,20 @@ bin/EV_Functions.o: EV_Functions.cpp EV_Functions.h
 	mkdir -p bin
 	g++ -c $(CXXFLAGS) EV_Functions.cpp -o bin/EV_Functions.o $(LDFLAGS)
 
-# EV_GLFW_Window binary
-bin/EV_GLFW_Window.o: EV_GLFW_Window.cpp EV_GLFW_Window.h
+# EV_Window binary
+bin/EV_Window.o: EV_Window.cpp EV_Window.h
 	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_GLFW_Window.cpp -o bin/EV_GLFW_Window.o $(LDFLAGS)
+	g++ -c $(CXXFLAGS) EV_Window.cpp -o bin/EV_Window.o $(LDFLAGS)
 
-# EV_VK_Instance binary
-bin/EV_VK_Instance.o: EV_VK_Instance.cpp EV_VK_Instance.h
+# EV_Instance binary
+bin/EV_Instance.o: EV_Instance.cpp EV_Instance.h
 	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_VK_Instance.cpp -o bin/EV_VK_Instance.o $(LDFLAGS)
+	g++ -c $(CXXFLAGS) EV_Instance.cpp -o bin/EV_Instance.o $(LDFLAGS)
 
-# EV_VK_Device binary
-bin/EV_VK_Device.o: EV_VK_Device.cpp EV_VK_Device.h
+# EV_Device binary
+bin/EV_Device.o: EV_Device.cpp EV_Device.h
 	mkdir -p bin
-	g++ -c $(CXXFLAGS) EV_VK_Device.cpp -o bin/EV_VK_Device.o $(LDFLAGS)
+	g++ -c $(CXXFLAGS) EV_Device.cpp -o bin/EV_Device.o $(LDFLAGS)
 
 clean:
 	rm -rf bin

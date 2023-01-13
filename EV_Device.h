@@ -1,16 +1,15 @@
 #pragma once 
 
 #include "EV_Classes.h"
-#include "EV_VK_Instance.h"
+#include "EV_Instance.h"
 
 namespace EV
 {
-    // Required EV_VK_Instance var
-    class EV_VK_Device
+    // Required EV_Instance var
+    class EV_Device
     {
     private:
-        EV_VK_Instance* VulkanInstance = nullptr;
-        
+        EV_Instance* Instance = nullptr;
         VkPhysicalDevice PhysicalDevice = VK_NULL_HANDLE;
         VkDevice LogicalDevice;
         VkQueue GraphicsQueue;
@@ -24,7 +23,7 @@ namespace EV
         VkDevice* GetLogicalDevice() { return &LogicalDevice; }
         VkQueue* GetGraphicsQueue() { return &GraphicsQueue; }
 
-        void SetVkInstance(EV_VK_Instance* vulkanInstance) { VulkanInstance = vulkanInstance; }
+        void SetVkInstance(EV_Instance* vulkanInstance) { Instance = vulkanInstance; }
         void Create();
 
         void Destroy();

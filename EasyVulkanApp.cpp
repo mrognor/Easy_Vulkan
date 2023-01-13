@@ -1,17 +1,17 @@
 #include <iostream>
 
 #include "EV_App.h"
-#include "EV_GLFW_Window.h"
-#include "EV_VK_Instance.h"
+#include "EV_Window.h"
+#include "EV_Instance.h"
 #include "EV_Functions.h"
-#include "EV_VK_Device.h"
+#include "EV_Device.h"
 
 class MyApp : public EV::EV_App
 {
 private:
-    EV::EV_GLFW_Window GLFW_Window;
-    EV::EV_VK_Instance VK_Instance;
-    EV::EV_VK_Device VK_Device;
+    EV::EV_Window GLFW_Window;
+    EV::EV_Instance VK_Instance;
+    EV::EV_Device VK_Device;
 public:
     void Setup() override 
     {

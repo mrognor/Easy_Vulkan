@@ -12,8 +12,8 @@ namespace EV
 {
     class EV_App;
     
-    class EV_GLFW_Window;
+    class EV_Window;
     
-    class EV_VK_Instance;
-    class EV_VK_Device;
+    class EV_Instance;
+    class EV_Device;
 }

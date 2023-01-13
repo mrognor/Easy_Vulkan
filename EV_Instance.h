@@ -12,7 +12,7 @@ namespace EV
         and creating it involves specifying some details about your application 
         to the driver.
     */
-    class EV_VK_Instance
+    class EV_Instance
     {
     private:
         VkInstance VulkanInstance;
