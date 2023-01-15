@@ -23,7 +23,7 @@ namespace EV
         VkDevice* GetLogicalDevice() { return &LogicalDevice; }
         VkQueue* GetGraphicsQueue() { return &GraphicsQueue; }
 
-        void SetVkInstance(EV_Instance* vulkanInstance) { Instance = vulkanInstance; }
+        void SetInstance(EV_Instance* vulkanInstance) { Instance = vulkanInstance; }
         void Create();
 
         void Destroy();

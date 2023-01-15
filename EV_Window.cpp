@@ -15,10 +15,24 @@ namespace EV
 
     void EV_Window::Create()
     {
+        // Check if EV_Instance variable was setup
+        if (Instance == nullptr)
+            throw std::runtime_error("From EV_Window::Create: You forget to setup EV_Instance variable!");
+        
+        // Check if EV_Instance variable was created before EV_Window
+        if (!Instance->IsCreated())
+            throw std::runtime_error("From EV_Window::Create You forget to create EV_Instance variable! EV_Instance must be created before EV_Window!");
+
         // Inform the library that it is not necessary to create a OpenGL context
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         // Create GLFWwindow
         GLFW_Window = glfwCreateWindow(WindowWidth, WindowHeight, WindowTitle.c_str(), nullptr, nullptr);
+
+        // Create window surface
+        VkResult createWindowSurfaceResult = glfwCreateWindowSurface(*Instance->GetVkInstance(), GLFW_Window, nullptr, &WindowSurface);
+
+        if (createWindowSurfaceResult != VK_SUCCESS)
+            throw std::runtime_error("From EV_Window::Create: Failed to create window surface! glfwCreateWindowSurface error code: " + std::to_string(createWindowSurfaceResult));
     }
 
     void EV_Window::Tick()
@@ -30,6 +44,8 @@ namespace EV
 
     void EV_Window::Destroy()
     {
+        // Destroy window surface
+        vkDestroySurfaceKHR(*Instance->GetVkInstance(), WindowSurface, nullptr);
         // Destroy window
         glfwDestroyWindow(GLFW_Window);
         // Unload glfw library

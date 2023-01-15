@@ -16,7 +16,6 @@ namespace EV
     {
     private:
         VkInstance VulkanInstance;
-        VkDebugUtilsMessengerCreateInfoEXT* DebugMessengerCreateInfo = nullptr;
         std::vector<const char*> RequiredExtensions;
         std::vector<const char*> RequiredValidationLayers;
 

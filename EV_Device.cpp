@@ -47,17 +47,17 @@ namespace EV
     {
         // Check if EV_Instance variable was setup
         if (Instance == nullptr)
-            throw std::runtime_error("From EV_Device: You forget to setup EV_Instance variable!");
+            throw std::runtime_error("From EV_Device::Create: You forget to setup EV_Instance variable!");
         
         // Check if EV_Instance variable was created before EV_Device
         if (!Instance->IsCreated())
-            throw std::runtime_error("From EV_Device: You forget to create EV_Instance variable!");
+            throw std::runtime_error("From EV_Device::Create: You forget to create EV_Instance variable! EV_Instance must be created before EV_Device!");
 
         // Get all gpus with vulkan support
         std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
 
         if (physicalDevices.size() == 0) 
-            throw std::runtime_error("From EV_Device: Failed to find GPUs with Vulkan support!");
+            throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
             
         // Find first suitable device. Have to write code to pich discrete gpu
         bool wasPickedGPU = false;
@@ -91,7 +91,7 @@ namespace EV
         }
 
         if (wasPickedGPU == false)
-            throw std::runtime_error("From EV_Device: Failed to find suitable gpu!");
+            throw std::runtime_error("From EV_Device::Create: Failed to find suitable gpu!");
 
         // Pass info to struct to create queue to logical device
         VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -117,7 +117,7 @@ namespace EV
 
         // Check VkDevice creation result
         if (createResult != VK_SUCCESS)
-            throw std::runtime_error("From EV_Device: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(createResult));
+            throw std::runtime_error("From EV_Device::Create: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(createResult));
 
         // Get graphics queue
         vkGetDeviceQueue(LogicalDevice, graphicsFamilyIndex, 0, &GraphicsQueue);

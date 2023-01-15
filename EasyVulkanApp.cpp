@@ -9,69 +9,69 @@
 class MyApp : public EV::EV_App
 {
 private:
-    EV::EV_Window GLFW_Window;
-    EV::EV_Instance VK_Instance;
-    EV::EV_Device VK_Device;
+    EV::EV_Window Window;
+    EV::EV_Instance Instance;
+    EV::EV_Device Device;
 public:
     void Setup() override 
     {
-        GLFW_Window.SetWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        Window.SetWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        Window.SetInstance(&Instance);
 
-        VK_Instance.AddRequiredExtensions(GLFW_Window.GetRequiredExtensions());
-        VK_Instance.AddRequiredExtension("VK_EXT_debug_utils");
-        VK_Instance.AddRequiredValidationLayer("VK_LAYER_KHRONOS_validation");
+        Instance.AddRequiredExtensions(Window.GetRequiredExtensions());
+        Instance.AddRequiredExtension("VK_EXT_debug_utils");
+        Instance.AddRequiredValidationLayer("VK_LAYER_KHRONOS_validation");
 
-        VK_Device.SetVkInstance(&VK_Instance);
+        Device.SetInstance(&Instance);
     }
 
     void Create() override 
     {
-        GLFW_Window.Create();
-        VK_Instance.Create();
-        VK_Device.Create();
+        Instance.Create();
+        Window.Create();
+        Device.Create();
     }
 
     void Run() override 
     {
         PrintInfo();
 
-        GLFW_Window.Tick();
+        Window.Tick();
     }
 
     void Cleanup() override 
     {
-        VK_Device.Destroy();
-        VK_Instance.Destroy();
-
-        GLFW_Window.Destroy();
+        Device.Destroy();
+        Window.Destroy();
+        Instance.Destroy();
     }
 
     void PrintInfo()
     {
         // Print info about extensions
-        std::vector<const char*> requiredExtensions = VK_Instance.GetRequiredExtensions();
+        std::vector<const char*> requiredExtensions = Instance.GetRequiredExtensions();
         std::cout << "Required extensions:" << std::endl;
         for (const char*& it : requiredExtensions)
             std::cout << "\t" << it << std::endl; 
 
-        std::vector<VkExtensionProperties> availalbleExtensions = VK_Instance.GetAvailableExtensions();
+        std::vector<VkExtensionProperties> availalbleExtensions = Instance.GetAvailableExtensions();
         std::cout << "Available extensions:" << std::endl;
         for (const VkExtensionProperties& it : availalbleExtensions)
             std::cout << "\t" << it.extensionName << std::endl; 
 
         // Print info about validation layers
-        std::vector<const char*> requiredValidationLayers = VK_Instance.GetRequiredValidationLayers();
+        std::vector<const char*> requiredValidationLayers = Instance.GetRequiredValidationLayers();
         std::cout << "Required validation layers:" << std::endl;
         for (const char*& it : requiredValidationLayers)
             std::cout << "\t" << it << std::endl;
 
-        std::vector<VkLayerProperties> availalbleValidationLayers = VK_Instance.GetAvailableValidationLayers();
+        std::vector<VkLayerProperties> availalbleValidationLayers = Instance.GetAvailableValidationLayers();
         std::cout << "Available validation layers:" << std::endl;
         for (const VkLayerProperties& it : availalbleValidationLayers)
             std::cout << "\t" << it.layerName << std::endl;
 
         // Print info about available gpus
-        std::vector<VkPhysicalDevice> physicalDevices = VK_Device.GetPhysicalDevices();
+        std::vector<VkPhysicalDevice> physicalDevices = Device.GetPhysicalDevices();
         std::cout << "Available gpus:" << std::endl;
         for (const VkPhysicalDevice& it : physicalDevices)
         {
@@ -82,7 +82,7 @@ public:
 
         // Print info about picked gpu
         std::cout << "Picked gpu:" << std::endl;
-        VkPhysicalDevice* pickedPhysicalDevice = VK_Device.GetPickedPhysicalDevice();
+        VkPhysicalDevice* pickedPhysicalDevice = Device.GetPickedPhysicalDevice();
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(*pickedPhysicalDevice, &physicalDeviceProperties);
         std::cout << "\t" << physicalDeviceProperties.deviceName << std::endl;

@@ -1,13 +1,17 @@
 #pragma once 
 
 #include "EV_Classes.h"
+#include "EV_Instance.h"
 
 namespace EV
 {
     class EV_Window
     {
     private:
+        EV_Instance* Instance = nullptr;
         GLFWwindow* GLFW_Window;
+        // Cross-platform connection between os window and vulkan lib
+        VkSurfaceKHR WindowSurface;
 
         int WindowWidth = 700;
         int WindowHeight = 500;
@@ -25,6 +29,7 @@ namespace EV
         void SetWindowWidth(int windowWidth) { WindowWidth = windowWidth; }
         void SetWindowHeight(int windowHeight) { WindowHeight = windowHeight; }
         void SetWindowTitle(std::string windowTitle) { WindowTitle = windowTitle; }
+        void SetInstance(EV_Instance* instance) { Instance = instance; }
 
         void Create();
         void Tick();

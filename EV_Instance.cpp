@@ -107,7 +107,7 @@ namespace EV
             }
 
             if (!isFoundExtension)
-                throw std::runtime_error("From EV_Instance: Requested extension not available! Extension name: " + std::string(requiredExtension));
+                throw std::runtime_error("From EV_Instance::Create: Requested extension not available! Extension name: " + std::string(requiredExtension));
         }
 
         // Passing the number of extensions and their list to create VkInstance
@@ -136,7 +136,7 @@ namespace EV
         // Check VkInstance creation result
         if (createResult != VK_SUCCESS)
         {
-            std::string errorMsg = "From EV_Instance: Failed to create VkInstance! vkCreateInstance error code: ";
+            std::string errorMsg = "From EV_Instance::Create: Failed to create VkInstance! vkCreateInstance error code: ";
             errorMsg += std::to_string(createResult);
             errorMsg += "\nMore info about vkCreateInstance here: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateInstance.html";
             errorMsg += "\nMore info about error codes here: https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkResult.html";
@@ -156,7 +156,7 @@ namespace EV
         PFN_vkDestroyDebugUtilsMessengerEXT destroyDebugMessengerFunc = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(VulkanInstance, "vkDestroyDebugUtilsMessengerEXT");
         if (destroyDebugMessengerFunc != nullptr) 
             destroyDebugMessengerFunc(VulkanInstance, DebugMessenger, nullptr);
-        else throw std::runtime_error("From EV_Instance: Failed to load func vkDestroyDebugUtilsMessengerEXT!");
+        else throw std::runtime_error("From EV_Instance::Destroy Failed to load func vkDestroyDebugUtilsMessengerEXT!");
         #endif
 
         vkDestroyInstance(VulkanInstance, nullptr);
