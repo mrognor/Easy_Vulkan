@@ -43,7 +43,7 @@ namespace EV
         std::vector<VkExtensionProperties> GetAvailableExtensions();
         std::vector<VkLayerProperties> GetAvailableValidationLayers();
         
-        /// Return true if VkInstance was created. Otherwise return false 
+        /// Return true if VkInstance was created and was not destroyed yet. Otherwise return false 
         bool IsCreated() { return bIsCreated; }
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };

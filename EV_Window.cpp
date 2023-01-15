@@ -21,7 +21,7 @@ namespace EV
         
         // Check if EV_Instance variable was created before EV_Window
         if (!Instance->IsCreated())
-            throw std::runtime_error("From EV_Window::Create You forget to create EV_Instance variable! EV_Instance must be created before EV_Window!");
+            throw std::runtime_error("From EV_Window::Create You forget to create EV_Instance variable! EV_Window must be created after EV_Instance!");
 
         // Inform the library that it is not necessary to create a OpenGL context
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -44,6 +44,9 @@ namespace EV
 
     void EV_Window::Destroy()
     {
+        if (!Instance->IsCreated())
+            throw std::runtime_error("From EV_Window::Destroy: EV_Instance was destroyed earlier! EV_Window must be destroyed before EV_Instance!");
+        
         // Destroy window surface
         vkDestroySurfaceKHR(*Instance->GetVkInstance(), WindowSurface, nullptr);
         // Destroy window

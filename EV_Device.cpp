@@ -51,7 +51,7 @@ namespace EV
         
         // Check if EV_Instance variable was created before EV_Device
         if (!Instance->IsCreated())
-            throw std::runtime_error("From EV_Device::Create: You forget to create EV_Instance variable! EV_Instance must be created before EV_Device!");
+            throw std::runtime_error("From EV_Device::Create: You forget to create EV_Instance variable! EV_Device must be created after EV_Instance!");
 
         // Get all gpus with vulkan support
         std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
