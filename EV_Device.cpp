@@ -16,6 +16,10 @@ namespace EV
         bool wasFoundGraphicsQueue = false;
         bool wasFoundPresentationQueue = false;
 
+        VkPhysicalDeviceProperties physicalDeviceProperties;
+        vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+        std::cout << "Device name: " << physicalDeviceProperties.deviceName << std::endl;
+
         for (const auto& queueFamily : queueFamilies) 
         {
             // Find graphics queue index
@@ -43,10 +47,7 @@ namespace EV
                 }
             }   
 
-            VkPhysicalDeviceProperties physicalDeviceProperties;
-            vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
-            std::cout << "Device name: " << physicalDeviceProperties.deviceName << std::endl;
-            std::cout << "\tQueue 1: Graphics support: " << (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
+            std::cout << "\tQueue " << std::to_string(i) << ": Graphics support: " << (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
                 << " Presentation support: " << presentationSupport << std::endl;
             
             i++;
