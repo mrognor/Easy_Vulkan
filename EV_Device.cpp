@@ -43,24 +43,19 @@ namespace EV
                 }
             }   
 
-            /*
-            if (presentationSupport == true && wasFoundPresentationQueue == true && i != graphicsFamilyIndex) 
-            {
-                presentationFamilyIndex = i; 
-            }
-
-            if (presentationSupport == true && wasFoundPresentationQueue == false) 
-            {
-                presentationFamilyIndex = i; 
-                wasFoundPresentationQueue = true;
-            }
-            */
+            VkPhysicalDeviceProperties physicalDeviceProperties;
+            vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+            std::cout << "Device name: " << physicalDeviceProperties.deviceName << std::endl;
+            std::cout << "\tQueue 1: Graphics support: " << (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
+                << " Presentation support: " << presentationSupport << std::endl;
+            
             i++;
         }
 
         std::cout << "Graphics queue index: " << graphicsFamilyIndex << std::endl;
         std::cout << "Presentation queue index: " << presentationFamilyIndex << std::endl;
-        
+        std::cout << "" << std::endl;
+
         if (wasFoundGraphicsQueue && wasFoundPresentationQueue)
             return true;
         else return false;
