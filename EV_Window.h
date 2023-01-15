@@ -16,7 +16,7 @@ namespace EV
         int WindowWidth = 700;
         int WindowHeight = 500;
         std::string WindowTitle = "Easy Vulkan App";
-
+        bool bIsCreated = false; 
     public:
         EV_Window() { glfwInit(); /* Init window library */}
 
@@ -25,6 +25,8 @@ namespace EV
         int GetWindowHeight() { return WindowHeight; }
         std::string GetWindowTitle() { return WindowTitle; }
         std::vector<const char*> GetRequiredExtensions();
+        bool IsCreated() { return bIsCreated; }
+        VkSurfaceKHR* GetWindowSurface() { return &WindowSurface; }
         
         void SetWindowWidth(int windowWidth) { WindowWidth = windowWidth; }
         void SetWindowHeight(int windowHeight) { WindowHeight = windowHeight; }

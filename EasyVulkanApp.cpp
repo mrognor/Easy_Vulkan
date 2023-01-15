@@ -23,6 +23,7 @@ public:
         Instance.AddRequiredValidationLayer("VK_LAYER_KHRONOS_validation");
 
         Device.SetInstance(&Instance);
+        Device.SetWindow(&Window);
     }
 
     void Create() override 

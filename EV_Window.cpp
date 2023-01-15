@@ -33,6 +33,8 @@ namespace EV
 
         if (createWindowSurfaceResult != VK_SUCCESS)
             throw std::runtime_error("From EV_Window::Create: Failed to create window surface! glfwCreateWindowSurface error code: " + std::to_string(createWindowSurfaceResult));
+
+        bIsCreated = true;
     }
 
     void EV_Window::Tick()
@@ -53,6 +55,8 @@ namespace EV
         glfwDestroyWindow(GLFW_Window);
         // Unload glfw library
         glfwTerminate();
+
+        bIsCreated = false;
     }
 
     void EV_Window::SetWindowHint(int hint, int value)

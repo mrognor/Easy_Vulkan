@@ -2,7 +2,7 @@
 
 namespace EV
 {
-    bool EV_Device::GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex)
+    bool EV_Device::GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex, uint32_t& presentationFamilyIndex)
     {
         // Get amount of queue families
         uint32_t queueFamilyCount = 0;
@@ -14,19 +14,54 @@ namespace EV
 
         int i = 0;
         bool wasFoundGraphicsQueue = false;
+        bool wasFoundPresentationQueue = false;
 
         for (const auto& queueFamily : queueFamilies) 
         {
-            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
+            // Find graphics queue index
+            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT && wasFoundGraphicsQueue == false) 
             {
                 wasFoundGraphicsQueue = true;
                 graphicsFamilyIndex = i;
-                break;
             }
+
+            // Find presentation queue index
+            VkBool32 presentationSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, *Window->GetWindowSurface(), &presentationSupport);
+
+            if (presentationSupport == true)
+            {
+                if (wasFoundPresentationQueue == true)
+                {
+                    if (i != graphicsFamilyIndex)
+                        presentationFamilyIndex = i; 
+                }
+                else
+                {
+                    presentationFamilyIndex = i; 
+                    wasFoundPresentationQueue = true;
+                }
+            }   
+
+            /*
+            if (presentationSupport == true && wasFoundPresentationQueue == true && i != graphicsFamilyIndex) 
+            {
+                presentationFamilyIndex = i; 
+            }
+
+            if (presentationSupport == true && wasFoundPresentationQueue == false) 
+            {
+                presentationFamilyIndex = i; 
+                wasFoundPresentationQueue = true;
+            }
+            */
             i++;
         }
 
-        if (wasFoundGraphicsQueue)
+        std::cout << "Graphics queue index: " << graphicsFamilyIndex << std::endl;
+        std::cout << "Presentation queue index: " << presentationFamilyIndex << std::endl;
+        
+        if (wasFoundGraphicsQueue && wasFoundPresentationQueue)
             return true;
         else return false;
     }
@@ -53,6 +88,15 @@ namespace EV
         if (!Instance->IsCreated())
             throw std::runtime_error("From EV_Device::Create: You forget to create EV_Instance variable! EV_Device must be created after EV_Instance!");
 
+        // Check if EV_Window variable was setup
+        if (Window == nullptr)
+            throw std::runtime_error("From EV_Device::Create: You forget to setup EV_Window variable!");
+        
+        // Check if EV_Window variable was created before EV_Device
+        if (!Window->IsCreated())
+            throw std::runtime_error("From EV_Device::Create: You forget to create EV_Window variable! EV_Device must be created after EV_Window!");
+
+
         // Get all gpus with vulkan support
         std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
 
@@ -64,10 +108,12 @@ namespace EV
         
         // Variable to store graphics familiy index on picked gpu
         uint32_t graphicsFamilyIndex;
+        // Variable to store presentation familiy index on picked gpu
+        uint32_t presentationFamilyIndex;
 
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
-            if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex))
+            if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex))
             {
                 // Get physical device properties
                 VkPhysicalDeviceProperties physicalDeviceProperties;
@@ -93,14 +139,30 @@ namespace EV
         if (wasPickedGPU == false)
             throw std::runtime_error("From EV_Device::Create: Failed to find suitable gpu!");
 
-        // Pass info to struct to create queue to logical device
-        VkDeviceQueueCreateInfo queueCreateInfo{};
-        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queueCreateInfo.queueFamilyIndex = graphicsFamilyIndex;
-        queueCreateInfo.queueCount = 1;
-        // Maybe let user change this value. After adding second queue type
-        float queuePriority = 1.0f;
-        queueCreateInfo.pQueuePriorities = &queuePriority;
+        // Pass info to struct to create queues to logical device
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+
+        int queuesCount = 1;
+        if (graphicsFamilyIndex != presentationFamilyIndex)
+            queuesCount++;
+
+        for (int i = 1; i <= queuesCount; i++)
+        {
+            VkDeviceQueueCreateInfo queueCreateInfo{};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            
+            switch(i)
+            {
+                case 1: queueCreateInfo.queueFamilyIndex = graphicsFamilyIndex; break;
+                case 2: queueCreateInfo.queueFamilyIndex = presentationFamilyIndex; break;
+            }
+
+            queueCreateInfo.queueCount = 1;
+            float queuePriority = 1.0f;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(queueCreateInfo);
+        }
+
 
         // Requested physcial device features
         VkPhysicalDeviceFeatures deviceFeatures{};
@@ -108,8 +170,8 @@ namespace EV
         // Logical device create info
         VkDeviceCreateInfo logicalDeviceCreateInfo{};
         logicalDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-        logicalDeviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
-        logicalDeviceCreateInfo.queueCreateInfoCount = 1;
+        logicalDeviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+        logicalDeviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
         logicalDeviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 
         // Create VkDevice result
@@ -121,6 +183,7 @@ namespace EV
 
         // Get graphics queue
         vkGetDeviceQueue(LogicalDevice, graphicsFamilyIndex, 0, &GraphicsQueue);
+        vkGetDeviceQueue(LogicalDevice, presentationFamilyIndex, 0, &PresentationQueue);
     }  
 
     void EV_Device::Destroy()
