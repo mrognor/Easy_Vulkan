@@ -16,4 +16,7 @@ namespace EV
 
         return VK_FALSE;
     }
+
+    // Function to print info about device queues. Created to let you get more info 
+    void PrintVkPhysicalDeviceQueuesInfo(const VkPhysicalDevice& physicalDevice, VkSurfaceKHR* windowSurface);
 }
