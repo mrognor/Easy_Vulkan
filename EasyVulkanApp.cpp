@@ -76,7 +76,7 @@ public:
         std::cout << "Available gpus:" << std::endl;
         for (const VkPhysicalDevice& it : physicalDevices)
         {
-            EV::PrintVkPhysicalDeviceQueuesInfo(it, Window.GetWindowSurface());
+            EV::PrintVkPhysicalDeviceQueuesInfo(it, Window.GetWindowSurface(), "\t");
         }
 
         // Print info about picked gpu
