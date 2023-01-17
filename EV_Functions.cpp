@@ -16,6 +16,8 @@ namespace EV
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
         std::cout << prefix << physicalDeviceProperties.deviceName << std::endl;
+        std::cout << physicalDeviceProperties.deviceType << std::endl;
+        std::cout << physicalDeviceProperties.deviceID << std::endl;
 
         int i = 0;
         for (const auto& queueFamily : queueFamilies) 

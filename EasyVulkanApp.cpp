@@ -24,6 +24,7 @@ public:
 
         Device.SetInstance(&Instance);
         Device.SetWindow(&Window);
+        // Device.SetPhysicalDevice(0);
     }
 
     void Create() override 

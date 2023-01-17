@@ -87,7 +87,6 @@ namespace EV
         if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
             
-        // Find first suitable device. Have to write code to pich discrete gpu
         bool wasPickedGPU = false;
         
         // Variable to store graphics familiy index on picked gpu
@@ -97,31 +96,50 @@ namespace EV
 
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
+            // Check device suitability
             if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex))
             {
                 // Get physical device properties
                 VkPhysicalDeviceProperties physicalDeviceProperties;
                 vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
 
-                if (wasPickedGPU == false)
+                if (IsPreferredDeviceSet)
                 {
-                    PhysicalDevice = physicalDevice;
-                    wasPickedGPU = true;
-                    continue;
-                }
-                else 
-                {
-                    if (physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                    if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
                         PhysicalDevice = physicalDevice;
+                        wasPickedGPU = true;
                         break;
+                    }
+                }
+                else
+                {
+                    if (wasPickedGPU == false)
+                    {
+                        PhysicalDevice = physicalDevice;
+                        wasPickedGPU = true;
+                        continue;
+                    }
+                    else 
+                    {
+                        if (physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                        {
+                            PhysicalDevice = physicalDevice;
+                            break;
+                        }
                     }
                 }
             }
         }
 
         if (wasPickedGPU == false)
-            throw std::runtime_error("From EV_Device::Create: Failed to find suitable gpu!");
+        {
+            if (IsPreferredDeviceSet)
+                throw std::runtime_error("From EV_Device::Create: Failed to find GPU! GPU id: " + 
+                std::to_string(PreferredDeviceID) + " \nThis error means that you set it somewhere");
+            else
+                throw std::runtime_error("From EV_Device::Create: Failed to find suitable GPU!");
+        }
 
         // Pass info to struct to create queues to logical device
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
