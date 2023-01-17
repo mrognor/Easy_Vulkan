@@ -16,8 +16,35 @@ namespace EV
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
         std::cout << prefix << physicalDeviceProperties.deviceName << std::endl;
-        std::cout << physicalDeviceProperties.deviceType << std::endl;
-        std::cout << physicalDeviceProperties.deviceID << std::endl;
+
+        std::cout << prefix;
+        switch (physicalDeviceProperties.deviceType)
+        {
+        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+            std::cout << "Discrete GPU type" << std::endl;
+            break;
+
+        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+            std::cout << "Integrated GPU type" << std::endl;
+            break;
+
+        case VK_PHYSICAL_DEVICE_TYPE_CPU:
+            std::cout << "CPU GPU type" << std::endl;
+            break;
+
+        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+            std::cout << "Virtual GPU type" << std::endl;
+            break;
+
+        default:
+            std::cout << "Other GPU type" << std::endl;
+            break;
+        }
+
+        std::cout << prefix << "Vendor ID: " << physicalDeviceProperties.vendorID 
+            << " Device ID: " << physicalDeviceProperties.deviceID
+            << " Driver version: " << physicalDeviceProperties.driverVersion
+            << " Vulkan API version: " << physicalDeviceProperties.apiVersion << std::endl;
 
         int i = 0;
         for (const auto& queueFamily : queueFamilies) 
