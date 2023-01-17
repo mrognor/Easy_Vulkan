@@ -55,22 +55,26 @@ public:
         std::cout << "Required extensions:" << std::endl;
         for (const char*& it : requiredExtensions)
             std::cout << "\t" << it << std::endl; 
+        std::cout << std::endl; 
 
         std::vector<VkExtensionProperties> availalbleExtensions = Instance.GetAvailableExtensions();
         std::cout << "Available extensions:" << std::endl;
         for (const VkExtensionProperties& it : availalbleExtensions)
             std::cout << "\t" << it.extensionName << std::endl; 
+        std::cout << std::endl;
 
         // Print info about validation layers
         std::vector<const char*> requiredValidationLayers = Instance.GetRequiredValidationLayers();
         std::cout << "Required validation layers:" << std::endl;
         for (const char*& it : requiredValidationLayers)
             std::cout << "\t" << it << std::endl;
+        std::cout << std::endl;
 
         std::vector<VkLayerProperties> availalbleValidationLayers = Instance.GetAvailableValidationLayers();
         std::cout << "Available validation layers:" << std::endl;
         for (const VkLayerProperties& it : availalbleValidationLayers)
             std::cout << "\t" << it.layerName << std::endl;
+        std::cout << std::endl;
 
         // Print info about available gpus
         std::vector<VkPhysicalDevice> physicalDevices = Device.GetPhysicalDevices();
@@ -78,6 +82,7 @@ public:
         for (const VkPhysicalDevice& it : physicalDevices)
         {
             EV::PrintVkPhysicalDeviceQueuesInfo(it, Window.GetWindowSurface(), "\t");
+            std::cout << std::endl;
         }
 
         // Print info about picked gpu
