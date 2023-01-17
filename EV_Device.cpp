@@ -86,13 +86,14 @@ namespace EV
 
         if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
-            
-        bool wasPickedGPU = false;
         
         // Variable to store graphics familiy index on picked gpu
         uint32_t graphicsFamilyIndex;
         // Variable to store presentation familiy index on picked gpu
         uint32_t presentationFamilyIndex;
+
+        // Map with all suitable physical devices
+        std::multimap<int, VkPhysicalDevice> physicalDevicesMap;
 
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
@@ -103,36 +104,48 @@ namespace EV
                 VkPhysicalDeviceProperties physicalDeviceProperties;
                 vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
 
+                // Check if preferred device set
                 if (IsPreferredDeviceSet)
                 {
                     if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
                         PhysicalDevice = physicalDevice;
-                        wasPickedGPU = true;
+                        physicalDevicesMap.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
                         break;
                     }
                 }
                 else
                 {
-                    if (wasPickedGPU == false)
+                    int gpuScores = 0;
+                    switch (physicalDeviceProperties.deviceType)
                     {
-                        PhysicalDevice = physicalDevice;
-                        wasPickedGPU = true;
-                        continue;
+                    case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+                        gpuScores = 4;
+                        break;
+                    
+                    case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+                        gpuScores = 3;
+                        break;
+                    
+                    case VK_PHYSICAL_DEVICE_TYPE_CPU:
+                        gpuScores = 2;
+                        break;
+
+                    case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+                        gpuScores = 1;
+                        break;
+
+                    default:
+                        gpuScores = 0;
+                        break;
                     }
-                    else 
-                    {
-                        if (physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-                        {
-                            PhysicalDevice = physicalDevice;
-                            break;
-                        }
-                    }
+
+                    physicalDevicesMap.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
                 }
             }
         }
 
-        if (wasPickedGPU == false)
+        if (physicalDevicesMap.size() == 0)
         {
             if (IsPreferredDeviceSet)
                 throw std::runtime_error("From EV_Device::Create: Failed to find GPU! GPU id: " + 
@@ -140,7 +153,9 @@ namespace EV
             else
                 throw std::runtime_error("From EV_Device::Create: Failed to find suitable GPU!");
         }
-
+        else 
+            PhysicalDevice = physicalDevicesMap.rbegin()->second;
+        
         // Pass info to struct to create queues to logical device
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
