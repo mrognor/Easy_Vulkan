@@ -10,11 +10,13 @@ namespace EV
     class EV_App
     {
     public:
-        void Start();
+        void Run();
 
         virtual void Setup() = 0;
         virtual void Create() = 0;
-        virtual void Run() = 0;
+        virtual void OnStart() = 0;
+        virtual void Tick() = 0;
+        virtual void OnEnd() = 0;
         virtual void Cleanup() = 0;
     };
 }

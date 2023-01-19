@@ -34,11 +34,19 @@ public:
         Device.Create();
     }
 
-    void Run() override 
+    void OnStart() override 
     {
         PrintInfo();
+    }
 
+    void Tick() override
+    {
         Window.Tick();
+    }
+
+    void OnEnd() override
+    {
+
     }
 
     void Cleanup() override 
@@ -100,7 +108,7 @@ int main()
 
     try 
     {
-        app.Start();
+        app.Run();
     } 
     catch (const std::exception& e) 
     {
