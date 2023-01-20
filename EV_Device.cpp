@@ -2,6 +2,16 @@
 
 namespace EV
 {
+    std::vector<VkExtensionProperties> EV_Device::GetAvailableExtensions(const VkPhysicalDevice& physicalDevice)
+    {
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+        return availableExtensions;
+    }
+
     bool EV_Device::GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex, uint32_t& presentationFamilyIndex)
     {
         // Get amount of queue families
@@ -97,6 +107,27 @@ namespace EV
 
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
+            // Get all available extensions
+            std::vector<VkExtensionProperties> availableExtensions = GetAvailableExtensions(physicalDevice);
+            
+            // Checking required device extensions support
+            for (const char*& requiredExtension : RequiredExtensions)
+            {
+                bool isFoundExtension = false;
+                
+                for (VkExtensionProperties availableExtension : availableExtensions)
+                {
+                    if (std::string(requiredExtension) == std::string(availableExtension.extensionName))
+                    {
+                        isFoundExtension = true;
+                        break;
+                    }
+                }
+
+                if (!isFoundExtension)
+                    throw std::runtime_error("From EV_Device::Create: Requested extension not available! Extension name: " + std::string(requiredExtension));
+            }
+
             // Check device suitability
             if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex))
             {
@@ -190,6 +221,8 @@ namespace EV
         logicalDeviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
         logicalDeviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
         logicalDeviceCreateInfo.pEnabledFeatures = &deviceFeatures;
+        logicalDeviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(RequiredExtensions.size());
+        logicalDeviceCreateInfo.ppEnabledExtensionNames = RequiredExtensions.data();
 
         // Create VkDevice result
         VkResult createResult = vkCreateDevice(PhysicalDevice, &logicalDeviceCreateInfo, nullptr, &LogicalDevice);

@@ -58,6 +58,17 @@ namespace EV
                 << " Presentation support: " << presentationSupport << std::endl;
             
             i++;
-        }
+        }  
+        
+        std::cout << prefix << "\tAvailable device extensions:" << std::endl;
+
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+        
+        for (const VkExtensionProperties& it : availableExtensions)
+            std::cout << prefix << "\t\t" << it.extensionName << std::endl; 
     }
 }

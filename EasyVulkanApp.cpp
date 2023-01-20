@@ -24,6 +24,7 @@ public:
 
         Device.SetInstance(&Instance);
         Device.SetWindow(&Window);
+        Device.AddRequiredExtension("VK_KHR_swapchain");
         // Device.SetPhysicalDevice(0);
     }
 
@@ -78,10 +79,16 @@ public:
             std::cout << "\t" << it << std::endl;
         std::cout << std::endl;
 
-        std::vector<VkLayerProperties> availalbleValidationLayers = Instance.GetAvailableValidationLayers();
+        std::vector<VkLayerProperties> availableValidationLayers = Instance.GetAvailableValidationLayers();
         std::cout << "Available validation layers:" << std::endl;
-        for (const VkLayerProperties& it : availalbleValidationLayers)
+        for (const VkLayerProperties& it : availableValidationLayers)
             std::cout << "\t" << it.layerName << std::endl;
+        std::cout << std::endl;
+
+        std::vector<const char*> requiredDeviceExtensions = Device.GetRequiredExtensions();
+        std::cout << "Required device extensions:" << std::endl;
+        for (const char*& it : requiredDeviceExtensions) 
+            std::cout << "\t" << it << std::endl;
         std::cout << std::endl;
 
         // Print info about available gpus
