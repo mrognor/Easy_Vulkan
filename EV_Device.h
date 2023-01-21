@@ -19,6 +19,9 @@ namespace EV
         VkQueue GraphicsQueue;
         uint32_t PresentationQueueIndex;
         VkQueue PresentationQueue;
+        VkSurfaceCapabilitiesKHR WindowSurfaceCapabilities;
+        std::vector<VkSurfaceFormatKHR> WindowSurfaceFormats;
+        std::vector<VkPresentModeKHR> WindowSurfacePresentationModes;
 
         std::vector<const char*> RequiredExtensions;
         // Bool variable to store info about picking physical device
@@ -29,6 +32,10 @@ namespace EV
 
         // Return false if one of queue family was not found. Put found indexec in 2 and 3 param
         bool GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex, uint32_t& presentationFamilyIndex);
+        bool GetSwapchainSupportDetails(const VkPhysicalDevice& physicalDevice, 
+        VkSurfaceCapabilitiesKHR& windowSurfaceCapabilities, 
+        std::vector<VkSurfaceFormatKHR>& windowSurfaceFormats,
+        std::vector<VkPresentModeKHR>& windowSurfacePresentationModes);
     public: 
         /// This function return vector of physical devices with vulkan support
         std::vector<VkPhysicalDevice> GetPhysicalDevices();

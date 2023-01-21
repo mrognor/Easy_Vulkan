@@ -59,6 +59,42 @@ namespace EV
             return true;
         else return false;
     }
+    
+    bool EV_Device::GetSwapchainSupportDetails(const VkPhysicalDevice& physicalDevice, 
+        VkSurfaceCapabilitiesKHR& windowSurfaceCapabilities, 
+        std::vector<VkSurfaceFormatKHR>& windowSurfaceFormats,
+        std::vector<VkPresentModeKHR>& windowSurfacePresentationModes)
+    {
+        // Get information about surface capabilities
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, *Window->GetWindowSurface(), &windowSurfaceCapabilities);
+
+        // Get supported surface formats amount
+        uint32_t surfaceFormatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, *Window->GetWindowSurface(), &surfaceFormatCount, nullptr);
+
+        // Get supported surface formats
+        if (surfaceFormatCount != 0) 
+        {
+            windowSurfaceFormats.resize(surfaceFormatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, *Window->GetWindowSurface(), &surfaceFormatCount, windowSurfaceFormats.data());
+        }
+
+        // Get supported presentation mods amount
+        uint32_t surfacePresentationModeCount;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, *Window->GetWindowSurface(), &surfacePresentationModeCount, nullptr);
+
+        // Get supported presentation mods
+        if (surfacePresentationModeCount != 0) 
+        {
+            windowSurfacePresentationModes.resize(surfacePresentationModeCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, *Window->GetWindowSurface(), &surfacePresentationModeCount, windowSurfacePresentationModes.data());
+        }
+        
+        // Check what it is at least one surface format and presentation mode 
+        if (surfaceFormatCount == 0 || surfacePresentationModeCount == 0)
+            return false;
+        else return true;
+    }
 
     std::vector<VkPhysicalDevice> EV_Device::GetPhysicalDevices()
     {
@@ -130,9 +166,16 @@ namespace EV
             uint32_t graphicsFamilyIndex;
             // Variable to store presentation familiy index on current gpu
             uint32_t presentationFamilyIndex;
+            // Variable to store window surface capabilities on current gpu
+            VkSurfaceCapabilitiesKHR windowSurfaceCapabilities;
+            // Variable to store window surface formats on current gpu
+            std::vector<VkSurfaceFormatKHR> windowSurfaceFormats;
+            // Variable to store window surface presentation mode on current gpu
+            std::vector<VkPresentModeKHR> windowSurfacePresentationModes;
 
             // Check device suitability
-            if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex))
+            if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex) &&
+            GetSwapchainSupportDetails(physicalDevice, windowSurfaceCapabilities, windowSurfaceFormats, windowSurfacePresentationModes))
             {
                 // Get physical device properties
                 VkPhysicalDeviceProperties physicalDeviceProperties;
@@ -144,9 +187,13 @@ namespace EV
                     if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
                         suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
+                        // Set variables to current gpu values
                         PhysicalDevice = physicalDevice;
                         GraphicsQueueIndex = graphicsFamilyIndex;
                         PresentationQueueIndex = presentationFamilyIndex;
+                        WindowSurfaceCapabilities = windowSurfaceCapabilities;
+                        WindowSurfaceFormats = windowSurfaceFormats;
+                        WindowSurfacePresentationModes = windowSurfacePresentationModes;
                         break;
                     }
                 }
@@ -178,11 +225,16 @@ namespace EV
     
                     suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
                     
+                    // Check what it is best gpu
                     if (suitablePhysicalDevices.rbegin()->second == physicalDevice)
-                    { 
+                    {
+                        // Set variables to current gpu values 
                         PhysicalDevice = physicalDevice;
                         GraphicsQueueIndex = graphicsFamilyIndex;
                         PresentationQueueIndex = presentationFamilyIndex;
+                        WindowSurfaceCapabilities = windowSurfaceCapabilities;
+                        WindowSurfaceFormats = windowSurfaceFormats;
+                        WindowSurfacePresentationModes = windowSurfacePresentationModes;
                     }
                 }
             }
