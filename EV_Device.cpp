@@ -94,17 +94,18 @@ namespace EV
         // Get all gpus with vulkan support
         std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
 
+        // Check if it is at least one physical device with vulkan support
         if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
         
-        // Variable to store graphics familiy index on picked gpu
-        uint32_t graphicsFamilyIndex;
-        // Variable to store presentation familiy index on picked gpu
-        uint32_t presentationFamilyIndex;
-
+        // Map with all suitable physical devices graphics family inexes
+        std::multimap<int, uint32_t> graphicsQueueFamilyIndexes;
+        // Map with all suitable physical devices presentation family inexes
+        std::multimap<int, uint32_t> presentationQueueFamilyIndexes;
         // Map with all suitable physical devices
-        std::multimap<int, VkPhysicalDevice> physicalDevicesMap;
+        std::multimap<int, VkPhysicalDevice> suitablePhysicalDevices;
 
+        // For loop to all availble gpus
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
         {
             // Get all available extensions
@@ -128,6 +129,11 @@ namespace EV
                     throw std::runtime_error("From EV_Device::Create: Requested extension not available! Extension name: " + std::string(requiredExtension));
             }
 
+            // Variable to store graphics familiy index on current gpu
+            uint32_t graphicsFamilyIndex;
+            // Variable to store presentation familiy index on current gpu
+            uint32_t presentationFamilyIndex;
+
             // Check device suitability
             if (GetQueueFamiliesIndexes(physicalDevice, graphicsFamilyIndex, presentationFamilyIndex))
             {
@@ -141,7 +147,7 @@ namespace EV
                     if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
                         PhysicalDevice = physicalDevice;
-                        physicalDevicesMap.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
+                        suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
                         break;
                     }
                 }
@@ -170,13 +176,16 @@ namespace EV
                         gpuScores = 0;
                         break;
                     }
-
-                    physicalDevicesMap.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
+    
+                    suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
+                    graphicsQueueFamilyIndexes.insert(std::pair<int, uint32_t>(gpuScores, graphicsFamilyIndex));
+                    presentationQueueFamilyIndexes.insert(std::pair<int, uint32_t>(gpuScores, presentationFamilyIndex));
                 }
             }
         }
 
-        if (physicalDevicesMap.size() == 0)
+        // Check if it is at least one suitable physical device
+        if (suitablePhysicalDevices.size() == 0)
         {
             if (IsPreferredDeviceSet)
                 throw std::runtime_error("From EV_Device::Create: Failed to find GPU! GPU id: " + 
@@ -185,13 +194,18 @@ namespace EV
                 throw std::runtime_error("From EV_Device::Create: Failed to find suitable GPU!");
         }
         else 
-            PhysicalDevice = physicalDevicesMap.rbegin()->second;
-        
+        {
+            PhysicalDevice = suitablePhysicalDevices.rbegin()->second;
+            GraphicsQueueIndex = graphicsQueueFamilyIndexes.rbegin()->second;
+            PresentationQueueIndex = presentationQueueFamilyIndexes.rbegin()->second;
+        }
+
         // Pass info to struct to create queues to logical device
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
+        // Checks that graphics queue index and presentation queue index not same
         int queuesCount = 1;
-        if (graphicsFamilyIndex != presentationFamilyIndex)
+        if (GraphicsQueueIndex != PresentationQueueIndex)
             queuesCount++;
 
         for (int i = 1; i <= queuesCount; i++)
@@ -201,8 +215,8 @@ namespace EV
             
             switch(i)
             {
-                case 1: queueCreateInfo.queueFamilyIndex = graphicsFamilyIndex; break;
-                case 2: queueCreateInfo.queueFamilyIndex = presentationFamilyIndex; break;
+                case 1: queueCreateInfo.queueFamilyIndex = GraphicsQueueIndex; break;
+                case 2: queueCreateInfo.queueFamilyIndex = PresentationQueueIndex; break;
             }
 
             queueCreateInfo.queueCount = 1;
@@ -232,12 +246,15 @@ namespace EV
             throw std::runtime_error("From EV_Device::Create: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(createResult));
 
         // Get graphics queue
-        vkGetDeviceQueue(LogicalDevice, graphicsFamilyIndex, 0, &GraphicsQueue);
-        vkGetDeviceQueue(LogicalDevice, presentationFamilyIndex, 0, &PresentationQueue);
+        vkGetDeviceQueue(LogicalDevice, GraphicsQueueIndex, 0, &GraphicsQueue);
+        vkGetDeviceQueue(LogicalDevice, PresentationQueueIndex, 0, &PresentationQueue);
+
+        bIsCreated = true;
     }  
 
     void EV_Device::Destroy()
     {
         vkDestroyDevice(LogicalDevice, nullptr);
+        bIsCreated = false;
     } 
 }

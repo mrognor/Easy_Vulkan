@@ -9,6 +9,7 @@ namespace EV
     {
     private:
         EV_Instance* Instance = nullptr;
+        
         GLFWwindow* GLFW_Window;
         // Cross-platform connection between os window and vulkan lib
         VkSurfaceKHR WindowSurface;

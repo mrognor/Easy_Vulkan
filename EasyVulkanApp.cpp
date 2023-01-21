@@ -106,6 +106,12 @@ public:
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(*pickedPhysicalDevice, &physicalDeviceProperties);
         std::cout << "\t" << physicalDeviceProperties.deviceName << std::endl;
+
+        // Print info about picked gpu queues
+        std::cout << "\tPicked gpu graphics queue:" << std::endl;
+        std::cout << "\t\t" << Device.GetGraphicsQueueIndex() << std::endl;
+        std::cout << "\tPicked gpu presentation queue:" << std::endl;
+        std::cout << "\t\t" << Device.GetPresentationQueueIndex() << std::endl;
     }
 };
 
