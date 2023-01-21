@@ -98,10 +98,7 @@ namespace EV
         if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
         
-        // Map with all suitable physical devices graphics family inexes
-        std::multimap<int, uint32_t> graphicsQueueFamilyIndexes;
-        // Map with all suitable physical devices presentation family inexes
-        std::multimap<int, uint32_t> presentationQueueFamilyIndexes;
+
         // Map with all suitable physical devices
         std::multimap<int, VkPhysicalDevice> suitablePhysicalDevices;
 
@@ -146,8 +143,10 @@ namespace EV
                 {
                     if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
-                        PhysicalDevice = physicalDevice;
                         suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
+                        PhysicalDevice = physicalDevice;
+                        GraphicsQueueIndex = graphicsFamilyIndex;
+                        PresentationQueueIndex = presentationFamilyIndex;
                         break;
                     }
                 }
@@ -178,8 +177,13 @@ namespace EV
                     }
     
                     suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
-                    graphicsQueueFamilyIndexes.insert(std::pair<int, uint32_t>(gpuScores, graphicsFamilyIndex));
-                    presentationQueueFamilyIndexes.insert(std::pair<int, uint32_t>(gpuScores, presentationFamilyIndex));
+                    
+                    if (suitablePhysicalDevices.rbegin()->second == physicalDevice)
+                    { 
+                        PhysicalDevice = physicalDevice;
+                        GraphicsQueueIndex = graphicsFamilyIndex;
+                        PresentationQueueIndex = presentationFamilyIndex;
+                    }
                 }
             }
         }
@@ -192,12 +196,6 @@ namespace EV
                 std::to_string(PreferredDeviceID) + " \nThis error means that you set it somewhere");
             else
                 throw std::runtime_error("From EV_Device::Create: Failed to find suitable GPU!");
-        }
-        else 
-        {
-            PhysicalDevice = suitablePhysicalDevices.rbegin()->second;
-            GraphicsQueueIndex = graphicsQueueFamilyIndexes.rbegin()->second;
-            PresentationQueueIndex = presentationQueueFamilyIndexes.rbegin()->second;
         }
 
         // Pass info to struct to create queues to logical device
