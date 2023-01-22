@@ -49,6 +49,9 @@ namespace EV
         uint32_t GetGraphicsQueueIndex() { return GraphicsQueueIndex; }
         // Return picked gpu presentation queue index. Useless before create function 
         uint32_t GetPresentationQueueIndex() { return PresentationQueueIndex; }
+        VkSurfaceCapabilitiesKHR GetWindowSurfaceCapabilities() { return WindowSurfaceCapabilities; }
+        std::vector<VkSurfaceFormatKHR> GetWindowSurfaceFormats() { return WindowSurfaceFormats; }
+        std::vector<VkPresentModeKHR> GetWindowSurfacePresentationModes() { return WindowSurfacePresentationModes; }
 
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };

@@ -5,6 +5,7 @@
 #include "EV_Instance.h"
 #include "EV_Functions.h"
 #include "EV_Device.h"
+#include "EV_Swapchain.h"
 
 class MyApp : public EV::EV_App
 {
@@ -12,6 +13,7 @@ private:
     EV::EV_Window Window;
     EV::EV_Instance Instance;
     EV::EV_Device Device;
+    EV::EV_Swapchain Swapchain;
 public:
     void Setup() override 
     {
@@ -26,6 +28,11 @@ public:
         Device.SetWindow(&Window);
         Device.AddRequiredExtension("VK_KHR_swapchain");
         // Device.SetPhysicalDevice(0);
+
+        Swapchain.SetWindow(&Window);
+        Swapchain.SetDevice(&Device);
+        // Swapchain.SetPickWindowSurfaceFormatFunc(PickWindowSurfaceFormat);
+        // Swapchain.SetPickWindowSurfacePresentationModeFunc(PickkWindowSurfacePresentationMode);
     }
 
     void Create() override 
@@ -33,6 +40,7 @@ public:
         Instance.Create();
         Window.Create();
         Device.Create();
+        Swapchain.Create();
     }
 
     void OnStart() override 

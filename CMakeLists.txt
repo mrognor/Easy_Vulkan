@@ -53,9 +53,9 @@ target_link_libraries(EasyVulkanApp EasyVulkan ${StandartIncludeLibraries})
 project(EasyVulkan)
 
 # Set library files
-set(LibHeaders EV_App.h EV_Functions.h EV_Window.h EV_Instance.h EV_Device.h)
+set(LibHeaders EV_App.h EV_Functions.h EV_Window.h EV_Instance.h EV_Device.h EV_Swapchain.h)
 
-set(LibSources EV_App.cpp EV_Functions.cpp EV_Window.cpp EV_Instance.cpp EV_Device.cpp)
+set(LibSources EV_App.cpp EV_Functions.cpp EV_Window.cpp EV_Instance.cpp EV_Device.cpp EV_Swapchain.cpp)
 
 add_library(EasyVulkan STATIC ${LibSources} ${LibHeaders})
 
