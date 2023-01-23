@@ -289,11 +289,11 @@ namespace EV
         logicalDeviceCreateInfo.ppEnabledExtensionNames = RequiredExtensions.data();
 
         // Create VkDevice result
-        VkResult createResult = vkCreateDevice(PhysicalDevice, &logicalDeviceCreateInfo, nullptr, &LogicalDevice);
+        VkResult logicalDeviceCreateResult = vkCreateDevice(PhysicalDevice, &logicalDeviceCreateInfo, nullptr, &LogicalDevice);
 
         // Check VkDevice creation result
-        if (createResult != VK_SUCCESS)
-            throw std::runtime_error("From EV_Device::Create: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(createResult));
+        if (logicalDeviceCreateResult != VK_SUCCESS)
+            throw std::runtime_error("From EV_Device::Create: Failed to create VkDevice! vkCreateDevice error code: " + std::to_string(logicalDeviceCreateResult));
 
         // Get graphics queue
         vkGetDeviceQueue(LogicalDevice, GraphicsQueueIndex, 0, &GraphicsQueue);

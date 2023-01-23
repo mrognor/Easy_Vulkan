@@ -2,6 +2,17 @@
 
 namespace EV
 {
+    void EV_Swapchain::SetSwapchainTransform(VkSurfaceTransformFlagBitsKHR swapchainTransform, bool disable)
+    { 
+        if(disable)
+            IsSwapchainTransformEnabled = false;
+        else
+        { 
+            IsSwapchainTransformEnabled = true;
+            swapchainTransform = swapchainTransform; 
+        }
+    }
+
     void EV_Swapchain::Create()
     {
         // Check if EV_Device variable was setup
@@ -95,12 +106,49 @@ namespace EV
         swapchainCreateInfo.imageFormat = windowSurfaceFormat.format;
         swapchainCreateInfo.imageColorSpace = windowSurfaceFormat.colorSpace;
         swapchainCreateInfo.imageExtent = swapchainExtent;
-        1 / 0; // Надо как-то отработать ввод параметров снизу
-        swapchainCreateInfo.imageArrayLayers = 1;
-        swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        swapchainCreateInfo.imageArrayLayers = SwapchainImageArrayLayers;
+        swapchainCreateInfo.imageUsage = SwapchainImageUsage;
+
+        // VK_SHARING_MODE_Exclusive may be better performance
+        // but require queue ownership transfer
+        // https://registry.khronos.org/vulkan/specs/1.3-extensions/html/vkspec.html#synchronization-queue-transfers
+        if (Device->GetGraphicsQueueIndex() != Device->GetPresentationQueueIndex()) 
+        {
+            uint32_t queueFamilyIndices[] = {Device->GetGraphicsQueueIndex(), Device->GetPresentationQueueIndex()};
+            swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+            swapchainCreateInfo.queueFamilyIndexCount = 2;
+            swapchainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
+        } 
+        else 
+        {
+            swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            swapchainCreateInfo.queueFamilyIndexCount = 0; 
+            swapchainCreateInfo.pQueueFamilyIndices = nullptr;
+        }
+
+        // Set swapchain transform
+        if (IsSwapchainTransformEnabled)
+            swapchainCreateInfo.preTransform = SwapchainTransform;
+        else
+            swapchainCreateInfo.preTransform = windowSurfaceCapabilities.currentTransform;
+
+        // Set swapchain alpha channel
+        swapchainCreateInfo.compositeAlpha = SwapchainAlphaFlag;
+        // Set swapchain presentation mode
+        swapchainCreateInfo.presentMode = windowSurfacePresentationMode;
+        // Set swapchain clipped or not
+        swapchainCreateInfo.clipped = SwapchainClipped; 
+        // Set old swapchain
+        swapchainCreateInfo.oldSwapchain = OldSwapchain;     
+
+        VkResult swapchainCreateResult = vkCreateSwapchainKHR(*Device->GetLogicalDevice(), &swapchainCreateInfo, nullptr, &SwapChain);
+
+        if (swapchainCreateResult != VK_SUCCESS) 
+            throw std::runtime_error("From EV_Swapchain::Create: Failed to create VkSwapchainKHR! vkCreateSwapchainKHR error code: " + std::to_string(swapchainCreateResult));
     }
 
     void EV_Swapchain::Destroy()
     {
+        vkDestroySwapchainKHR(*Device->GetLogicalDevice(), SwapChain, nullptr);
     }
 }

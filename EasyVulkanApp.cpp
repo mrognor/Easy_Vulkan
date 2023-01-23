@@ -60,6 +60,7 @@ public:
 
     void Cleanup() override 
     {
+        Swapchain.Destroy();
         Device.Destroy();
         Window.Destroy();
         Instance.Destroy();
