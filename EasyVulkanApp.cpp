@@ -109,6 +109,17 @@ public:
             std::cout << std::endl;
         }
 
+        // Print info about suitable gpus
+        std::multimap<int, VkPhysicalDevice> suitableDevices = Device.GetSuitablePhysicalDevices();
+        std::cout << "Suitable gpus:" << std::endl;
+        for (const std::pair<int, VkPhysicalDevice>& it : suitableDevices)
+        {
+            VkPhysicalDeviceProperties physicalDeviceProperties;
+            vkGetPhysicalDeviceProperties(it.second, &physicalDeviceProperties);
+            std::cout << "\tDevice name: " << physicalDeviceProperties.deviceName << "\tDevice points: "<< it.first << std::endl; 
+        }
+        std::cout << std::endl;
+
         // Print info about picked gpu
         std::cout << "Picked gpu:" << std::endl;
         VkPhysicalDevice* pickedPhysicalDevice = Device.GetPickedPhysicalDevice();

@@ -22,6 +22,8 @@ namespace EV
         VkSurfaceCapabilitiesKHR WindowSurfaceCapabilities;
         std::vector<VkSurfaceFormatKHR> WindowSurfaceFormats;
         std::vector<VkPresentModeKHR> WindowSurfacePresentationModes;
+        // Miltimap with all suitable physical devices
+        std::multimap<int, VkPhysicalDevice> SuitablePhysicalDevices;
 
         std::vector<const char*> RequiredExtensions;
         // Bool variable to store info about picking physical device
@@ -52,7 +54,8 @@ namespace EV
         VkSurfaceCapabilitiesKHR GetWindowSurfaceCapabilities() { return WindowSurfaceCapabilities; }
         std::vector<VkSurfaceFormatKHR> GetWindowSurfaceFormats() { return WindowSurfaceFormats; }
         std::vector<VkPresentModeKHR> GetWindowSurfacePresentationModes() { return WindowSurfacePresentationModes; }
-
+        std::multimap<int, VkPhysicalDevice> GetSuitablePhysicalDevices() { return SuitablePhysicalDevices; }
+        
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };
         void SetInstance(EV_Instance* vulkanInstance) { Instance = vulkanInstance; }

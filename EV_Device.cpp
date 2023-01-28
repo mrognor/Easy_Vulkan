@@ -126,6 +126,8 @@ namespace EV
         if (!Window->IsCreated())
             throw std::runtime_error("From EV_Device::Create: You forget to create EV_Window variable! EV_Device must be created after EV_Window!");
 
+        // Clear suitable physical devices
+        SuitablePhysicalDevices.clear();
 
         // Get all gpus with vulkan support
         std::vector<VkPhysicalDevice> physicalDevices = GetPhysicalDevices();
@@ -133,10 +135,6 @@ namespace EV
         // Check if it is at least one physical device with vulkan support
         if (physicalDevices.size() == 0) 
             throw std::runtime_error("From EV_Device::Create: Failed to find GPUs with Vulkan support!");
-        
-
-        // Map with all suitable physical devices
-        std::multimap<int, VkPhysicalDevice> suitablePhysicalDevices;
 
         // For loop to all availble gpus
         for (const VkPhysicalDevice& physicalDevice : physicalDevices)
@@ -186,7 +184,7 @@ namespace EV
                 {
                     if (physicalDeviceProperties.deviceID == PreferredDeviceID)
                     {
-                        suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
+                        SuitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(5, physicalDevice));
                         // Set variables to current gpu values
                         PhysicalDevice = physicalDevice;
                         GraphicsQueueIndex = graphicsFamilyIndex;
@@ -223,10 +221,10 @@ namespace EV
                         break;
                     }
     
-                    suitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
+                    SuitablePhysicalDevices.insert(std::pair<int, VkPhysicalDevice>(gpuScores, physicalDevice));
                     
                     // Check what it is best gpu
-                    if (suitablePhysicalDevices.rbegin()->second == physicalDevice)
+                    if (SuitablePhysicalDevices.rbegin()->second == physicalDevice)
                     {
                         // Set variables to current gpu values 
                         PhysicalDevice = physicalDevice;
@@ -241,10 +239,10 @@ namespace EV
         }
 
         // Check if it is at least one suitable physical device
-        if (suitablePhysicalDevices.size() == 0)
+        if (SuitablePhysicalDevices.size() == 0)
         {
             if (IsPreferredDeviceSet)
-                throw std::runtime_error("From EV_Device::Create: Failed to find GPU! GPU id: " + 
+                throw std::runtime_error("From EV_Device::Create: Failed to find GPU or this GPU not suitable! GPU id: " + 
                 std::to_string(PreferredDeviceID) + " \nThis error means that you set it somewhere");
             else
                 throw std::runtime_error("From EV_Device::Create: Failed to find suitable GPU!");
