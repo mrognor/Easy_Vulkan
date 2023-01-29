@@ -31,6 +31,7 @@ public:
 
         Swapchain.SetWindow(&Window);
         Swapchain.SetDevice(&Device);
+        // Swapchain.SetImageViewComponentSwizzle(0, VK_COMPONENT_SWIZZLE_ZERO);
         // Swapchain.SetPickWindowSurfaceFormatFunc(PickWindowSurfaceFormat);
         // Swapchain.SetPickWindowSurfacePresentationModeFunc(PickkWindowSurfacePresentationMode);
     }

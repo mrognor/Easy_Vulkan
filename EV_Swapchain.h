@@ -40,7 +40,25 @@ namespace EV
         VkSwapchainKHR OldSwapchain = VK_NULL_HANDLE;
 
         // VkSwapchain itself
-        VkSwapchainKHR SwapChain;
+        VkSwapchainKHR Swapchain;
+
+        // Images from swapchain
+        std::vector<VkImage> SwapchainImages;
+
+        // Resolution of images in swapchain
+        VkExtent2D SwapchainExtent;
+
+        // Image format in swapchain
+        VkFormat SwapchainImageFormat;
+
+        // Image viewss in swapchain
+        std::vector<VkImageView> SwapchainImageViews;
+
+        // Image view type. By default set to VK_IMAGE_VIEW_TYPE_2D
+        VkImageViewType ImageViewType = VK_IMAGE_VIEW_TYPE_2D;
+
+        // Image view components swizzle. Red, green, blue, alpha. By default all set to VK_COMPONENT_SWIZZLE_IDENTITY
+        VkComponentSwizzle ImageViewComponentSwizzles[4] = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
 
         VkSurfaceFormatKHR (*PickWindowSurfaceFormat)(std::vector<VkSurfaceFormatKHR>) = nullptr;
         VkPresentModeKHR (*PickWindowSurfacePresentationMode)(std::vector<VkPresentModeKHR>) = nullptr;
@@ -77,8 +95,14 @@ namespace EV
         void SetSwapchainClipped(VkBool32 swapchainClipped) { SwapchainClipped = swapchainClipped; }
         void SetOldSwapchain(VkSwapchainKHR oldSwapchain) { OldSwapchain = oldSwapchain; }
 
-        VkSwapchainKHR* GetSwapchain() { return &SwapChain; }
+        // Set image view component swizzle by channel. 0 is for red, 1 is for green, 2 is for blue, 3 is for alpha. 
+        // By default all set to VK_COMPONENT_SWIZZLE_IDENTITY
+        void SetImageViewComponentSwizzle(int channel, VkComponentSwizzle componentSwizzle) { ImageViewComponentSwizzles[channel] = componentSwizzle; }
         
+        VkSwapchainKHR* GetSwapchain() { return &Swapchain; }
+        VkExtent2D GetSwapchainExtent() { return SwapchainExtent; }
+        VkFormat GetSwapchainImageFormat() { return SwapchainImageFormat; }
+
         void Create();
         void Destroy();
     };

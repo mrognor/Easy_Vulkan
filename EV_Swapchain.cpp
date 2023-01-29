@@ -34,8 +34,10 @@ namespace EV
         // Get window surface formats
         std::vector<VkSurfaceFormatKHR> windowSurfaceFormats = Device->GetWindowSurfaceFormats();
 
+        VkSurfaceFormatKHR windowSurfaceFormat;
+
         // Set first available surface format
-        VkSurfaceFormatKHR windowSurfaceFormat = windowSurfaceFormats[0];
+        windowSurfaceFormat = windowSurfaceFormats[0];
 
         // Check if it is user-set function to pickd surface format
         if(PickWindowSurfaceFormat == nullptr)
@@ -47,6 +49,8 @@ namespace EV
             }
         }
         else windowSurfaceFormat = PickWindowSurfaceFormat(windowSurfaceFormats);
+
+        SwapchainImageFormat = windowSurfaceFormat.format;
 
         // Get window surface presentation modes
         std::vector<VkPresentModeKHR> windowSurfacePresentationModes = Device->GetWindowSurfacePresentationModes();
@@ -66,29 +70,27 @@ namespace EV
         // Set swapchain extent. Extent equals swapchain images resolution
         VkSurfaceCapabilitiesKHR windowSurfaceCapabilities = Device->GetWindowSurfaceCapabilities();
 
-        VkExtent2D swapchainExtent;
-
         // Get swapchain extent
         if (windowSurfaceCapabilities.currentExtent.width != -1)
-            swapchainExtent = windowSurfaceCapabilities.currentExtent;
+            SwapchainExtent = windowSurfaceCapabilities.currentExtent;
         else
         {
             int width, height;
             glfwGetFramebufferSize(Window->GetGLFWWindow(), &width, &height);
 
-            swapchainExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+            SwapchainExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 
             // Clamp extent width
-            if (swapchainExtent.width < windowSurfaceCapabilities.minImageExtent.width)
-                swapchainExtent.width = windowSurfaceCapabilities.minImageExtent.width;
-            if (swapchainExtent.width > windowSurfaceCapabilities.maxImageExtent.width)
-                swapchainExtent.width = windowSurfaceCapabilities.maxImageExtent.width;
+            if (SwapchainExtent.width < windowSurfaceCapabilities.minImageExtent.width)
+                SwapchainExtent.width = windowSurfaceCapabilities.minImageExtent.width;
+            if (SwapchainExtent.width > windowSurfaceCapabilities.maxImageExtent.width)
+                SwapchainExtent.width = windowSurfaceCapabilities.maxImageExtent.width;
 
             // Clamp extent height
-            if (swapchainExtent.height < windowSurfaceCapabilities.minImageExtent.height)
-                swapchainExtent.height = windowSurfaceCapabilities.minImageExtent.height;
-            if (swapchainExtent.height > windowSurfaceCapabilities.maxImageExtent.height)
-                swapchainExtent.height = windowSurfaceCapabilities.maxImageExtent.height;
+            if (SwapchainExtent.height < windowSurfaceCapabilities.minImageExtent.height)
+                SwapchainExtent.height = windowSurfaceCapabilities.minImageExtent.height;
+            if (SwapchainExtent.height > windowSurfaceCapabilities.maxImageExtent.height)
+                SwapchainExtent.height = windowSurfaceCapabilities.maxImageExtent.height;
         }
 
         // Amount of images in swapchain
@@ -105,7 +107,7 @@ namespace EV
         swapchainCreateInfo.minImageCount = swapchainImageCount;
         swapchainCreateInfo.imageFormat = windowSurfaceFormat.format;
         swapchainCreateInfo.imageColorSpace = windowSurfaceFormat.colorSpace;
-        swapchainCreateInfo.imageExtent = swapchainExtent;
+        swapchainCreateInfo.imageExtent = SwapchainExtent;
         swapchainCreateInfo.imageArrayLayers = SwapchainImageArrayLayers;
         swapchainCreateInfo.imageUsage = SwapchainImageUsage;
 
@@ -141,14 +143,51 @@ namespace EV
         // Set old swapchain
         swapchainCreateInfo.oldSwapchain = OldSwapchain;     
 
-        VkResult swapchainCreateResult = vkCreateSwapchainKHR(*Device->GetLogicalDevice(), &swapchainCreateInfo, nullptr, &SwapChain);
+        // Create swapchain
+        VkResult swapchainCreateResult = vkCreateSwapchainKHR(*Device->GetLogicalDevice(), &swapchainCreateInfo, nullptr, &Swapchain);
 
+        // Check swapchain create result
         if (swapchainCreateResult != VK_SUCCESS) 
             throw std::runtime_error("From EV_Swapchain::Create: Failed to create VkSwapchainKHR! vkCreateSwapchainKHR error code: " + std::to_string(swapchainCreateResult));
+
+        // Get swapchain images
+        uint32_t realSwapchainImageCount;
+        vkGetSwapchainImagesKHR(*Device->GetLogicalDevice(), Swapchain, &realSwapchainImageCount, nullptr);
+        SwapchainImages.resize(realSwapchainImageCount);
+        vkGetSwapchainImagesKHR(*Device->GetLogicalDevice(), Swapchain, &realSwapchainImageCount, SwapchainImages.data());
+
+        // Create swapchain images view
+        SwapchainImageViews.resize(SwapchainImages.size());
+        for (size_t i = 0; i < SwapchainImages.size(); i++) 
+        {
+            VkImageViewCreateInfo imageViewCreateInfo{};
+            imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            imageViewCreateInfo.image = SwapchainImages[i];
+            imageViewCreateInfo.viewType = ImageViewType;
+            imageViewCreateInfo.format = SwapchainImageFormat;
+            imageViewCreateInfo.components.r = ImageViewComponentSwizzles[0];
+            imageViewCreateInfo.components.g = ImageViewComponentSwizzles[1];
+            imageViewCreateInfo.components.b = ImageViewComponentSwizzles[2];
+            imageViewCreateInfo.components.a = ImageViewComponentSwizzles[3];
+            imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+            imageViewCreateInfo.subresourceRange.levelCount = 1;
+            imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+            imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+            // Create VkImageView
+            VkResult createImageViewResult = vkCreateImageView(*Device->GetLogicalDevice(), &imageViewCreateInfo, nullptr, &SwapchainImageViews[i]);
+            
+            if (createImageViewResult != VK_SUCCESS) 
+                throw std::runtime_error("From EV_Swapchain::Create: Failed to create VkImageView! vkCreateImageView error code: " + std::to_string(createImageViewResult));
+        }   
     }
 
     void EV_Swapchain::Destroy()
     {
-        vkDestroySwapchainKHR(*Device->GetLogicalDevice(), SwapChain, nullptr);
+        for (auto imageView : SwapchainImageViews) 
+            vkDestroyImageView(*Device->GetLogicalDevice(), imageView, nullptr);
+
+        vkDestroySwapchainKHR(*Device->GetLogicalDevice(), Swapchain, nullptr);
     }
 }
