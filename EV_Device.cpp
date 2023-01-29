@@ -201,23 +201,27 @@ namespace EV
                     switch (physicalDeviceProperties.deviceType)
                     {
                     case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-                        gpuScores = 4;
+                        gpuScores += 40000; // Discrete gpu is 40000 points
+                        gpuScores += availableExtensions.size(); // Add extensions count to points
                         break;
                     
                     case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-                        gpuScores = 3;
+                        gpuScores += 30000; // Integrated gpu is 30000 points
+                        gpuScores += availableExtensions.size(); // Add extensions count to points
                         break;
                     
                     case VK_PHYSICAL_DEVICE_TYPE_CPU:
-                        gpuScores = 2;
+                        gpuScores += 20000; // CPU gpu is 20000 points
+                        gpuScores += availableExtensions.size(); // Add extensions count to points
                         break;
 
                     case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-                        gpuScores = 1;
+                        gpuScores += 10000; // Virtual gpu is 10000 points
+                        gpuScores += availableExtensions.size(); // Add extensions count to points
                         break;
 
                     default:
-                        gpuScores = 0;
+                        gpuScores += availableExtensions.size(); // Add extensions count to points
                         break;
                     }
     
