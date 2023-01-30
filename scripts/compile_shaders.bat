@@ -1,2 +1,2 @@
-glslangValidator.exe -V ..\shaders\shader.frag -o ..\shaders\frag.spv
-glslangValidator.exe -V ..\shaders\shader.vert -o ..\shaders\vert.spv
+glslangValidator.exe -V %~dp0..\shaders\shader.frag -o %~dp0..\shaders\frag.spv
+glslangValidator.exe -V %~dp0..\shaders\shader.vert -o %~dp0..\shaders\vert.spv
