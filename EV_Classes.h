@@ -18,4 +18,5 @@ namespace EV
     class EV_Instance;
     class EV_Device;
     class EV_Swapchain;
+    class EV_GraphicsPipeline;
 }

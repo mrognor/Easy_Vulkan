@@ -6,6 +6,8 @@
 #include "EV_Functions.h"
 #include "EV_Device.h"
 #include "EV_Swapchain.h"
+#include "EV_GraphicsPipeline.h"
+
 
 class MyApp : public EV::EV_App
 {

@@ -22,8 +22,8 @@ bin/EasyVulkanApp$(FileExt): bin/libEasyVulkan.a EasyVulkanApp.cpp
 	g++ $(CXXFLAGS) EasyVulkanApp.cpp bin/libEasyVulkan.a -o bin/EasyVulkanApp$(FileExt) $(LDFLAGS)
 
 # Library binary
-bin/libEasyVulkan.a: bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o bin/EV_Swapchain.o
-	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o bin/EV_Swapchain.o
+bin/libEasyVulkan.a: bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o bin/EV_Swapchain.o bin/EV_GraphicsPipeline.o
+	ar rc bin/libEasyVulkan.a bin/EV_App.o bin/EV_Window.o bin/EV_Instance.o bin/EV_Functions.o bin/EV_Device.o bin/EV_Swapchain.o bin/EV_GraphicsPipeline.o
 	ranlib bin/libEasyVulkan.a
 
 # EV_App binary
@@ -55,6 +55,11 @@ bin/EV_Device.o: EV_Device.cpp EV_Device.h
 bin/EV_Swapchain.o: EV_Swapchain.cpp EV_Swapchain.h
 	mkdir -p bin
 	g++ -c $(CXXFLAGS) EV_Swapchain.cpp -o bin/EV_Swapchain.o $(LDFLAGS)
+
+# EV_GraphicsPipeline binary
+bin/EV_GraphicsPipeline.o: EV_GraphicsPipeline.cpp EV_GraphicsPipeline.h
+	mkdir -p bin
+	g++ -c $(CXXFLAGS) EV_GraphicsPipeline.cpp -o bin/EV_GraphicsPipeline.o $(LDFLAGS)
 
 clean:
 	rm -rf bin
