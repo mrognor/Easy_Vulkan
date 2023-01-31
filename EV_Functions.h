@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "EV_Classes.h"
 
 namespace EV
@@ -20,4 +22,7 @@ namespace EV
     // Function to print info about device queues. Created to let you get more info
     // Prefix puts before every new line. Allow yoy to make good looking output
     void PrintVkPhysicalDeviceQueuesInfo(const VkPhysicalDevice& physicalDevice, VkSurfaceKHR* windowSurface, std::string prefix = "");
+
+    // Function to read file in binary mode and return vector of chars
+    bool ReadFileBinary(const std::string& fileName, std::vector<char>& fileVec);
 }

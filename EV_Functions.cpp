@@ -71,4 +71,28 @@ namespace EV
         for (const VkExtensionProperties& it : availableExtensions)
             std::cout << prefix << "\t\t" << it.extensionName << std::endl; 
     }
+
+    bool ReadFileBinary(const std::string& fileName, std::vector<char>& fileVec)
+    {
+        // Open file at end in binary mode
+        std::ifstream file(fileName, std::ios::ate | std::ios::binary);
+
+        // Check what file opened successfully 
+        if (!file.is_open()) 
+            return false;
+        
+        // Get file size
+        size_t fileSize = (size_t) file.tellg();
+        // Create vector with required file size
+        fileVec.resize(fileSize);
+
+        // Move to file start
+        file.seekg(0);
+        // Read file and put all data to vector
+        file.read(fileVec.data(), fileSize);
+        // Close file
+        file.close();
+
+        return true;
+    }
 }

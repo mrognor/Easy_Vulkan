@@ -16,6 +16,7 @@ private:
     EV::EV_Instance Instance;
     EV::EV_Device Device;
     EV::EV_Swapchain Swapchain;
+    EV::EV_GraphicsPipeline Pipeline;
 public:
     void Setup() override 
     {
@@ -36,6 +37,10 @@ public:
         // Swapchain.SetImageViewComponentSwizzle(0, VK_COMPONENT_SWIZZLE_ZERO);
         // Swapchain.SetPickWindowSurfaceFormatFunc(PickWindowSurfaceFormat);
         // Swapchain.SetPickWindowSurfacePresentationModeFunc(PickkWindowSurfacePresentationMode);
+
+        Pipeline.SetDevice(&Device);
+        Pipeline.SetShaderInfo("shaders/vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+        Pipeline.SetShaderInfo("shaders/frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     }
 
     void Create() override 
@@ -44,6 +49,7 @@ public:
         Window.Create();
         Device.Create();
         Swapchain.Create();
+        Pipeline.Create();
     }
 
     void OnStart() override 
