@@ -30,17 +30,14 @@ public:
         Device.SetInstance(&Instance);
         Device.SetWindow(&Window);
         Device.AddRequiredExtension("VK_KHR_swapchain");
-        // Device.SetPhysicalDevice(0);
 
         Swapchain.SetWindow(&Window);
         Swapchain.SetDevice(&Device);
-        // Swapchain.SetImageViewComponentSwizzle(0, VK_COMPONENT_SWIZZLE_ZERO);
-        // Swapchain.SetPickWindowSurfaceFormatFunc(PickWindowSurfaceFormat);
-        // Swapchain.SetPickWindowSurfacePresentationModeFunc(PickkWindowSurfacePresentationMode);
 
         Pipeline.SetDevice(&Device);
         Pipeline.SetShaderInfo("shaders/vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
         Pipeline.SetShaderInfo("shaders/frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+        Pipeline.AddPipelineDynamicStates({ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR });
     }
 
     void Create() override 
@@ -69,6 +66,7 @@ public:
 
     void Cleanup() override 
     {
+        Pipeline.Destroy();
         Swapchain.Destroy();
         Device.Destroy();
         Window.Destroy();
