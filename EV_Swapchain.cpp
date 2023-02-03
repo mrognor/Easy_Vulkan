@@ -20,7 +20,7 @@ namespace EV
             throw std::runtime_error("From EV_Swapchain::Create: You forget to setup EV_Device variable!");
         
         // Check if EV_Device variable was created before EV_Swapchain
-        if (!Device->IsCreated())
+        if (!Device->GetIsCreated())
             throw std::runtime_error("From EV_Swapchain::Create: You forget to create EV_Device variable! EV_Swapchain must be created after EV_Device!");
 
         // Check if EV_Window variable was setup
@@ -28,7 +28,7 @@ namespace EV
             throw std::runtime_error("From EV_Swapchain::Create: You forget to setup EV_Window variable!");
         
         // Check if EV_Window variable was created before EV_Device
-        if (!Window->IsCreated())
+        if (!Window->GetIsCreated())
             throw std::runtime_error("From EV_Swapchain::Create: You forget to create EV_Window variable! EV_Swapchain must be created after EV_Window!");
 
         // Get window surface formats

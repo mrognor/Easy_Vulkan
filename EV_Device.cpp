@@ -115,7 +115,7 @@ namespace EV
             throw std::runtime_error("From EV_Device::Create: You forget to setup EV_Instance variable!");
         
         // Check if EV_Instance variable was created before EV_Device
-        if (!Instance->IsCreated())
+        if (!Instance->GetIsCreated())
             throw std::runtime_error("From EV_Device::Create: You forget to create EV_Instance variable! EV_Device must be created after EV_Instance!");
 
         // Check if EV_Window variable was setup
@@ -123,7 +123,7 @@ namespace EV
             throw std::runtime_error("From EV_Device::Create: You forget to setup EV_Window variable!");
         
         // Check if EV_Window variable was created before EV_Device
-        if (!Window->IsCreated())
+        if (!Window->GetIsCreated())
             throw std::runtime_error("From EV_Device::Create: You forget to create EV_Window variable! EV_Device must be created after EV_Window!");
 
         // Clear suitable physical devices
@@ -301,12 +301,12 @@ namespace EV
         vkGetDeviceQueue(LogicalDevice, GraphicsQueueIndex, 0, &GraphicsQueue);
         vkGetDeviceQueue(LogicalDevice, PresentationQueueIndex, 0, &PresentationQueue);
 
-        bIsCreated = true;
+        IsCreated = true;
     }  
 
     void EV_Device::Destroy()
     {
         vkDestroyDevice(LogicalDevice, nullptr);
-        bIsCreated = false;
+        IsCreated = false;
     } 
 }

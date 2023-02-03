@@ -30,7 +30,7 @@ namespace EV
         bool IsPreferredDeviceSet = false;
         // Variable to store preferred device id
         uint32_t PreferredDeviceID;
-        bool bIsCreated = false;
+        bool IsCreated = false;
 
         // Return false if one of queue family was not found. Put found indexec in 2 and 3 param
         bool GetQueueFamiliesIndexes(const VkPhysicalDevice& physicalDevice, uint32_t& graphicsFamilyIndex, uint32_t& presentationFamilyIndex);
@@ -46,7 +46,7 @@ namespace EV
         VkQueue* GetGraphicsQueue() { return &GraphicsQueue; }
         std::vector<VkExtensionProperties> GetAvailableExtensions(const VkPhysicalDevice& physicalDevice);
         std::vector<const char*> GetRequiredExtensions() { return RequiredExtensions; }
-        bool IsCreated() { return bIsCreated; }
+        bool GetIsCreated() { return IsCreated; }
         // Return picked gpu graphics queue index. Useless before create function 
         uint32_t GetGraphicsQueueIndex() { return GraphicsQueueIndex; }
         // Return picked gpu presentation queue index. Useless before create function 

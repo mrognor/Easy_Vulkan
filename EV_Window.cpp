@@ -20,7 +20,7 @@ namespace EV
             throw std::runtime_error("From EV_Window::Create: You forget to setup EV_Instance variable!");
         
         // Check if EV_Instance variable was created before EV_Window
-        if (!Instance->IsCreated())
+        if (!Instance->GetIsCreated())
             throw std::runtime_error("From EV_Window::Create You forget to create EV_Instance variable! EV_Window must be created after EV_Instance!");
 
         // Inform the library that it is not necessary to create a OpenGL context
@@ -34,7 +34,7 @@ namespace EV
         if (createWindowSurfaceResult != VK_SUCCESS)
             throw std::runtime_error("From EV_Window::Create: Failed to create window surface! glfwCreateWindowSurface error code: " + std::to_string(createWindowSurfaceResult));
 
-        bIsCreated = true;
+        IsCreated = true;
     }
 
     void EV_Window::Tick()
@@ -46,7 +46,7 @@ namespace EV
 
     void EV_Window::Destroy()
     {
-        if (!Instance->IsCreated())
+        if (!Instance->GetIsCreated())
             throw std::runtime_error("From EV_Window::Destroy: EV_Instance was destroyed earlier! EV_Window must be destroyed before EV_Instance!");
         
         // Destroy window surface
@@ -56,7 +56,7 @@ namespace EV
         // Unload glfw library
         glfwTerminate();
 
-        bIsCreated = false;
+        IsCreated = false;
     }
 
     void EV_Window::SetWindowHint(int hint, int value)

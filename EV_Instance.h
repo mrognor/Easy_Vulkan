@@ -32,7 +32,7 @@ namespace EV
         VkDebugUtilsMessengerEXT DebugMessenger;  
 
         /// Variable to store object creation state
-        bool bIsCreated = false;
+        bool IsCreated = false;
 
         void CreateDebugMessenger(const VkDebugUtilsMessengerCreateInfoEXT& debugMessengerCreateInfo);
 
@@ -44,7 +44,7 @@ namespace EV
         std::vector<VkLayerProperties> GetAvailableValidationLayers();
         
         /// Return true if VkInstance was created and was not destroyed yet. Otherwise return false 
-        bool IsCreated() { return bIsCreated; }
+        bool GetIsCreated() { return IsCreated; }
         void AddRequiredExtension(const char* requiredExtension) { RequiredExtensions.push_back(requiredExtension); };
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };
         void AddRequiredValidationLayer(const char* requiredValidationLayer) { RequiredValidationLayers.push_back(requiredValidationLayer); };
