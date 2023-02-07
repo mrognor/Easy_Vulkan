@@ -60,7 +60,7 @@ namespace EV
         void AddRequiredExtensions(const std::vector<const char*>& requiredExtensions) { RequiredExtensions.insert(RequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end()); };
         void SetInstance(EV_Instance* vulkanInstance) { Instance = vulkanInstance; }
         void SetWindow(EV_Window* window) { Window = window; }
-        // Function to set physical device
+        /// Function to set physical device
         void SetPhysicalDevice(uint32_t deviceID) { IsPreferredDeviceSet = true; PreferredDeviceID = deviceID; };
 
         void Create();
