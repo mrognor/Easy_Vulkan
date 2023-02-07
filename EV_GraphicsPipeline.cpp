@@ -51,7 +51,7 @@ namespace EV
 
             pipelineShaderStageCreateInfos.push_back(shaderStageInfo);
 
-            // todo dont shure what it will be work
+            /// \todo dont shure what it will be work
             vkDestroyShaderModule(*Device->GetLogicalDevice(), shaderModule, nullptr); 
         }
 
@@ -61,7 +61,7 @@ namespace EV
         pipelineDynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(PipelineDynamicStates.size());
         pipelineDynamicStateCreateInfo.pDynamicStates = PipelineDynamicStates.data();
 
-        // todo make later
+        /// \todo make later
         VkPipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo{};
         pipelineVertexInputStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
         pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 0;
