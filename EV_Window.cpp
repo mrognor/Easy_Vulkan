@@ -2,6 +2,13 @@
 
 namespace EV
 {
+    EV_Window::EV_Window()
+    {
+        // Checking that it was possible to initialize library 
+        if (!glfwInit())
+            throw(std::runtime_error("From EV_Window::EV_Window: Failed to init glfw!"));
+    }
+
     std::vector<const char*> EV_Window::GetRequiredExtensions()
     {
         // Get the number of necessary vulkan extensions for glfw to work and their list
