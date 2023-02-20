@@ -2,6 +2,8 @@
 # Easy_Vulkan
 Simple C++ vulkan library
 
+Official documentation: https://mrognor.github.io/Easy_Vulkan_Documentation/
+
 To prepare the project for work, you must do the following:
 1. Install a vulkan. You can do it yourself or use a script install vulkan.bat from this folder
 2. Install glfw and glm. Use the install_glfw_and_glm.bat script from this folder
